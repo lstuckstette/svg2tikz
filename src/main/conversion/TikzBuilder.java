@@ -1,4 +1,4 @@
-package svg2tikz.conversion;
+package main.conversion;
 
 public class TikzBuilder {
 

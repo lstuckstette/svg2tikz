@@ -22,6 +22,9 @@
 				<version>4.7.1</version>
 				<executions>
 					<execution>
+						<configuration>
+							<outputDirectory>src/main/antlr4/</outputDirectory>
+						</configuration> 
 						<goals>
 							<goal>antlr4</goal>
 						</goals>

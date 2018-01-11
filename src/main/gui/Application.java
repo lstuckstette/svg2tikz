@@ -1,4 +1,4 @@
-package svg2tikz.main;
+package main.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

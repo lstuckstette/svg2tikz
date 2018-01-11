@@ -1,4 +1,4 @@
-package svg2tikz.main;
+package main.gui;
 
 import java.io.File;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
-import svg2tikz.conversion.LatexBuilder;
-import svg2tikz.conversion.SVGParser;
-import svg2tikz.conversion.TikzBuilder;
+import main.conversion.LatexBuilder;
+import main.conversion.SVGParserBuilder;
+import main.conversion.TikzBuilder;
 
 /**
  * Searches the text files under the given directory and counts the number of
@@ -54,7 +54,7 @@ public class ConversionWorker extends SwingWorker<Boolean, String> {
 
 		// parse File
 		publish("Parsing SVG-file '" + sourceFile.getName() + "' with antlr4:");
-		new SVGParser(sourceFile);
+		new SVGParserBuilder(sourceFile);
 		Thread.sleep(1000);
 		publish("done!");
 		setProgress(20);

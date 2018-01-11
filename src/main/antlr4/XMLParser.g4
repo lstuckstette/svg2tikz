@@ -29,6 +29,7 @@
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar XMLParser;
 
+
 options { tokenVocab=XMLLexer; }
 
 document    :   prolog? misc* element misc*;

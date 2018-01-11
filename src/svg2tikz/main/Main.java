@@ -6,6 +6,15 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+
+/*
+ * To generate Lexer/Parser, build against maven-goal 'antlr4:antlr4' 
+ * and copy generated files from 'target/generated-sources/antlr4' 
+ * to preferred destination
+ * 
+ * 
+ */
+
 public class Main {
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {

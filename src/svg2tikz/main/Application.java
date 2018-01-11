@@ -1,4 +1,4 @@
-package svg2tikz;
+package svg2tikz.main;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -124,7 +124,7 @@ public class Application extends JFrame {
 		add(new JLabel("Source File: "), constraints);
 
 		sourceFilePathTextField = new JTextField();
-		sourceFilePathTextField.setText("C:\\");
+		sourceFilePathTextField.setText(".\\");
 		constraints = new GridBagConstraints();
 		constraints.gridx = 1;
 		constraints.gridy = 1;

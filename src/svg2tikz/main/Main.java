@@ -1,4 +1,4 @@
-package svg2tikz;
+package svg2tikz.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,7 +18,6 @@ public class Main {
 				//Center Window:
 				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 				frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
-				
 				frame.setVisible(true);
 			}
 		});

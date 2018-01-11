@@ -1,10 +1,14 @@
-package svg2tikz;
+package svg2tikz.main;
 
 import java.io.File;
 import java.util.List;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
+
+import svg2tikz.conversion.LatexBuilder;
+import svg2tikz.conversion.SVGParser;
+import svg2tikz.conversion.TikzBuilder;
 
 /**
  * Searches the text files under the given directory and counts the number of
@@ -50,24 +54,28 @@ public class ConversionWorker extends SwingWorker<Boolean, String> {
 
 		// parse File
 		publish("Parsing SVG-file '" + sourceFile.getName() + "' with antlr4:");
-		Thread.sleep(2000);
+		new SVGParser(sourceFile);
+		Thread.sleep(1000);
 		publish("done!");
 		setProgress(20);
 
 		// generating target language using parseTree:
 		publish("Generating TikZ-code using parse-tree:");
-		Thread.sleep(2000);
+		new TikzBuilder();
+		Thread.sleep(1000);
 		publish("done!");
 		setProgress(80);
 
 		// putting together latex document
 		publish("Building LateX-template containing TikZ-Code:");
-		Thread.sleep(2000);
+		LatexBuilder lb = new LatexBuilder();
+		Thread.sleep(1000);
 		publish("done!");
 		setProgress(90);
 
 		// writing output File
 		publish("Writing output file to "+targetDirectory.getAbsolutePath()+" :");
+		lb.writeToFile(targetDirectory);
 		Thread.sleep(1000);
 		publish("done!");
 		setProgress(100);

@@ -1,37 +1,146 @@
-/*
- [The "BSD licence"]
- Copyright (c) 2013 Tom Everett
- All rights reserved.
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
- 3. The name of the author may not be used to endorse or promote products
-    derived from this software without specific prior written permission.
-
- THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
 lexer grammar  SVGLexer;
 
 @header {
 package main.antlr4;
 }
 
+
+SVG_OPEN
+	: '<svg>'
+	;
+	
+SVG_CLOSE
+	: '</svg>'
+	;
+
+CIRCLE_OPEN
+	: '<circle' -> pushMode(TAG)
+	;
+	
+CIRCLE_CLOSE
+	: '/>' -> popMode
+	;
+	
+RECT_OPEN
+	: '<rect' -> pushMode(TAG)
+	;
+	
+RECT_CLOSE
+	: '/>' -> popMode
+	;
+	
+ELLIPSE_OPEN
+	: '<ellipse' -> pushMode(TAG)
+	;
+	
+ELLIPSE_CLOSE
+	: '/>' -> popMode
+	;
+
+LINE_OPEN
+	: '<line' -> pushMode(TAG)
+	;
+	
+LINE_CLOSE
+	: '/>' -> popMode
+	;
+
+POLYGON_OPEN
+	: '<polygon' -> pushMode(TAG)
+	;
+	
+POLYGON_CLOSE
+	: '/>' -> popMode
+	;
+	
+POLYLINE_OPEN
+	: '<polyline' -> pushMode(TAG)
+	;
+	
+POLYLINE_CLOSE
+	: '/>' -> popMode
+	;
+	
+PATH_OPEN
+	: '<path' -> pushMode(TAG)
+	;
+	
+PATH_CLOSE
+	: '/>' -> popMode
+	;
+	
+TEXT_OPEN
+	: '<text' -> pushMode(TAG)
+	;
+	
+TEXT_CLOSE
+	: '</text>' -> popMode
+	;
+	
+STROKE_OPEN
+	: '<g' -> pushMode(TAG)
+	;
+	
+STROKE_CLOSE
+	: '</g>' -> popMode
+	;
+	
+DEFS_OPEN
+	: '<defs' -> pushMode(TAG)
+	;
+	
+DEFS_CLOSE
+	: '</defs>' -> popMode
+	;
+	
+FILTER_OPEN
+	: '<filter' -> pushMode(TAG)
+	;
+	
+FILTER_CLOSE
+	: '</filter>' -> popMode
+	;
+	
+FEOFFSET_OPEN
+	: '<feOffset' -> pushMode(TAG)
+	;
+	
+FEOFFSET_CLOSE
+	: '/>' -> popMode
+	;
+	
+FEBLEND_OPEN
+	: '<feBlend' -> pushMode(TAG)
+	;
+	
+FEBLEND_CLOSE
+	: '/>' -> popMode
+	;
+	
+LINEARGRADIENT_OPEN
+	: '<linearGradient' -> pushMode(TAG)
+	;
+	
+LINEARGRADIENT_CLOSE
+	: '</linearGradient>' -> popMode
+	;
+	
+STOP_OPEN
+	: '<stop' -> pushMode(TAG)
+	;
+	
+STOP_CLOSE
+	: '/>' -> popMode
+	;
+	
+RADIALGRADIENT_OPEN
+	: '<radialGradient' -> pushMode(TAG)
+	;
+	
+RADIALGRADIENT_CLOSE
+	: '</radialGradient>' -> popMode
+	;
+	
 HTML_COMMENT
     : '<!--' .*? '-->'
     ;
@@ -100,7 +209,7 @@ TAG_SLASH
 TAG_EQUALS
     : '=' -> pushMode(ATTVALUE)
     ;
-
+	
 TAG_NAME
     : TAG_NameStartChar TAG_NameChar*
     ;
@@ -215,7 +324,6 @@ fragment DECCHARS
 fragment DOUBLE_QUOTE_STRING
     : '"' ~[<"]* '"'
     ;
-
 fragment SINGLE_QUOTE_STRING
     : '\'' ~[<']* '\''
-    ;
+;

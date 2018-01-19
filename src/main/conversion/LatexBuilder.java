@@ -21,6 +21,7 @@ public class LatexBuilder {
 
 		appendLine("\\documentclass{article}");
 		appendLine("\\usepackage{tikz}");
+		appendLine("\\usetikzlibrary{svg.path}");
 		appendLine("\\begin{document}");
 		appendLine("EXAMPLE LATEX DOC!");
 		appendLine("\\begin{tikzpicture}");

@@ -1,5 +1,6 @@
 package main.conversion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import main.antlr4.SVGParser.AttributeContext;
@@ -38,11 +39,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitCircle(CircleContext ctx) {
-		List<AttributeContext> list = ctx.attribute();
-		for(AttributeContext a : list) {
-			System.out.println("Attribute Name: "+a.NAME());
-			System.out.println("Attribute Value: "+a.STRING());
-		}
+
 	}
 
 	@Override
@@ -77,8 +74,36 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath(PathContext ctx) {
-		// TODO Auto-generated method stub
+		String[] pathElem = new String[3];
+		List<AttributeContext> list = ctx.attribute();
+		for (AttributeContext a : list) {
+			// System.out.println("Attribute Name: " + a.NAME());
+			// System.out.println("Attribute Value: " + a.STRING());
 
+			switch (a.NAME().toString()) {
+			case "d":
+				pathElem[1] = "\\draw [fill=tmpcolor] svg {" + a.STRING().toString() + "};";
+				break;
+			case "style":
+				String[] stylevalues = a.STRING().toString().split(";");
+				for (String s : stylevalues) {
+					if (s.startsWith("\"fill")) {
+						String[] fillColor = s.split(":");
+						int R = Integer.parseInt(fillColor[1].substring(1, 3), 16);
+						int G = Integer.parseInt(fillColor[1].substring(3, 5), 16);
+						int B = Integer.parseInt(fillColor[1].substring(5, 7), 16);
+						//System.out.println(fillColor[1] +" -> "+R + "  " + G + "  " + B);
+						pathElem[0] = "\\definecolor{tmpcolor}{RGB}{"+R+","+G+","+B+"}";
+						break;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		tikzBuilder.appendString(pathElem[0]);
+		tikzBuilder.appendString(pathElem[1]);
 		pathCount++;
 
 	}

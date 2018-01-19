@@ -17,7 +17,7 @@ public class TikzBuilder {
 
 	public void appendString(String input) {
 
-		content.append(input);
+		content.append(input+"\n");
 	}
 
 	public String toString() {

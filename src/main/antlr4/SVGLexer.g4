@@ -44,7 +44,7 @@ NAME_LINEARGRADIENT		: 'linearGradient' ;
 NAME_RADIALGRADIENT		: 'radialGradient' ;
 NAME_STOP				: 'stop' ;
 				
-NAME	: [a-zA-Z:]+ ;
+NAME	: [a-zA-Z:-]+ ;
 CLOSE 			: '>' 		-> popMode ;
 SLASH_CLOSE 	: '/>'		-> popMode ;
 SLASH			: '/' ;

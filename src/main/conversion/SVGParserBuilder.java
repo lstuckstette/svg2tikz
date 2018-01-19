@@ -33,12 +33,15 @@ public class SVGParserBuilder {
 			TokenStream tokenStream = new CommonTokenStream(svgLexer);			
 			//Build Parser
 			SVGParser svgParser = new SVGParser(tokenStream);
+			//Build new Parselistener
+			SVGParseListener parseListener = new SVGParseListener();
+			svgParser.addParseListener(parseListener);
 			//Get 'root' element (hopefully the 'svg' element)
 			SvgRootContext svgCtx = svgParser.svgRoot();
 			
 			
 			//syso complete tree!
-			System.out.println(svgCtx.toStringTree(svgParser));
+			//System.out.println(svgCtx.toStringTree(svgParser));
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

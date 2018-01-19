@@ -82,6 +82,8 @@ public class Application extends JFrame {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
+				//clear logwindow:
+				messagesTextArea.setText("");
 				if (conversionWorker == null) {
 					search();
 				} else {

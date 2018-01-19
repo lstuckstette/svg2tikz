@@ -1,329 +1,58 @@
+/*
+@author L.Stuckstette, B.Schmidt
+*/
+
 lexer grammar  SVGLexer;
 
 @header {
 package main.antlr4;
 }
 
+// skip whitespace
+WS  :   [ \t\n\r]+ -> skip ;
 
-SVG_OPEN
-	: '<svg>'
-	;
-	
-SVG_CLOSE
-	: '</svg>'
-	;
+// skip SVG/XML comments
+COMMENT 	: '<!--' .*? '-->'  -> skip ;
 
-CIRCLE_OPEN
-	: '<circle' -> pushMode(TAG)
-	;
-	
-CIRCLE_CLOSE
-	: '/>' -> popMode
-	;
-	
-RECT_OPEN
-	: '<rect' -> pushMode(TAG)
-	;
-	
-RECT_CLOSE
-	: '/>' -> popMode
-	;
-	
-ELLIPSE_OPEN
-	: '<ellipse' -> pushMode(TAG)
-	;
-	
-ELLIPSE_CLOSE
-	: '/>' -> popMode
-	;
+// skip XML Declaration
+XML_DECL 	: '<?xml' .*? '?>' 	-> skip;
 
-LINE_OPEN
-	: '<line' -> pushMode(TAG)
-	;
-	
-LINE_CLOSE
-	: '/>' -> popMode
-	;
+// skip DOCTYPE
+DOCTYPE 	: '<!' .*? '>'		-> skip ;
 
-POLYGON_OPEN
-	: '<polygon' -> pushMode(TAG)
-	;
-	
-POLYGON_CLOSE
-	: '/>' -> popMode
-	;
-	
-POLYLINE_OPEN
-	: '<polyline' -> pushMode(TAG)
-	;
-	
-POLYLINE_CLOSE
-	: '/>' -> popMode
-	;
-	
-PATH_OPEN
-	: '<path' -> pushMode(TAG)
-	;
-	
-PATH_CLOSE
-	: '/>' -> popMode
-	;
-	
-TEXT_OPEN
-	: '<text' -> pushMode(TAG)
-	;
-	
-TEXT_CLOSE
-	: '</text>' -> popMode
-	;
-	
-STROKE_OPEN
-	: '<g' -> pushMode(TAG)
-	;
-	
-STROKE_CLOSE
-	: '</g>' -> popMode
-	;
-	
-DEFS_OPEN
-	: '<defs' -> pushMode(TAG)
-	;
-	
-DEFS_CLOSE
-	: '</defs>' -> popMode
-	;
-	
-FILTER_OPEN
-	: '<filter' -> pushMode(TAG)
-	;
-	
-FILTER_CLOSE
-	: '</filter>' -> popMode
-	;
-	
-FEOFFSET_OPEN
-	: '<feOffset' -> pushMode(TAG)
-	;
-	
-FEOFFSET_CLOSE
-	: '/>' -> popMode
-	;
-	
-FEBLEND_OPEN
-	: '<feBlend' -> pushMode(TAG)
-	;
-	
-FEBLEND_CLOSE
-	: '/>' -> popMode
-	;
-	
-LINEARGRADIENT_OPEN
-	: '<linearGradient' -> pushMode(TAG)
-	;
-	
-LINEARGRADIENT_CLOSE
-	: '</linearGradient>' -> popMode
-	;
-	
-STOP_OPEN
-	: '<stop' -> pushMode(TAG)
-	;
-	
-STOP_CLOSE
-	: '/>' -> popMode
-	;
-	
-RADIALGRADIENT_OPEN
-	: '<radialGradient' -> pushMode(TAG)
-	;
-	
-RADIALGRADIENT_CLOSE
-	: '</radialGradient>' -> popMode
-	;
-	
-HTML_COMMENT
-    : '<!--' .*? '-->'
-    ;
+// tag open
+OPEN 		: '<'		-> pushMode(INSIDE);
 
-HTML_CONDITIONAL_COMMENT
-    : '<![' .*? ']>'
-    ;
+//general text
+TEXT 		: ~[<&]+ ;
 
-XML_DECLARATION
-    : '<?xml' .*? '>'
-    ;
+mode INSIDE;
 
-CDATA
-    : '<![CDATA[' .*? ']]>'
-    ;
-
-DTD
-    : '<!' .*? '>'
-    ;
-
-SCRIPTLET
-    : '<?' .*? '?>'
-    | '<%' .*? '%>'
-    ;
-
-SEA_WS
-    :  (' '|'\t'|'\r'? '\n')+
-    ;
-
-SCRIPT_OPEN
-    : '<script' .*? '>' ->pushMode(SCRIPT)
-    ;
-
-STYLE_OPEN
-    : '<style' .*? '>'  ->pushMode(STYLE)
-    ;
-
-TAG_OPEN
-    : '<' -> pushMode(TAG)
-    ;
-
-HTML_TEXT
-    : ~'<'+
-    ;
-
-//
-// tag declarations
-//
-mode TAG;
-
-TAG_CLOSE
-    : '>' -> popMode
-    ;
-
-TAG_SLASH_CLOSE
-    : '/>' -> popMode
-    ;
-
-TAG_SLASH
-    : '/'
-    ;
-
-//
-// lexing mode for attribute values
-//
-TAG_EQUALS
-    : '=' -> pushMode(ATTVALUE)
-    ;
-	
-TAG_NAME
-    : TAG_NameStartChar TAG_NameChar*
-    ;
-
-TAG_WHITESPACE
-    : [ \t\r\n] -> skip
-    ;
-
-fragment
-HEXDIGIT
-    : [a-fA-F0-9]
-    ;
-
-fragment
-DIGIT
-    : [0-9]
-    ;
-
-fragment
-TAG_NameChar
-    : TAG_NameStartChar
-    | '-'
-    | '_'
-    | '.'
-    | DIGIT
-    |   '\u00B7'
-    |   '\u0300'..'\u036F'
-    |   '\u203F'..'\u2040'
-    ;
-
-fragment
-TAG_NameStartChar
-    :   [:a-zA-Z]
-    |   '\u2070'..'\u218F'
-    |   '\u2C00'..'\u2FEF'
-    |   '\u3001'..'\uD7FF'
-    |   '\uF900'..'\uFDCF'
-    |   '\uFDF0'..'\uFFFD'
-    ;
-
-//
-// <scripts>
-//
-mode SCRIPT;
-
-SCRIPT_BODY
-    : .*? '</script>' -> popMode
-    ;
-
-SCRIPT_SHORT_BODY
-    : .*? '</>' -> popMode
-    ;
-
-//
-// <styles>
-//
-mode STYLE;
-
-STYLE_BODY
-    : .*? '</style>' -> popMode
-    ;
-
-STYLE_SHORT_BODY
-    : .*? '</>' -> popMode
-    ;
-
-//
-// attribute values
-//
-mode ATTVALUE;
-
-// an attribute value may have spaces b/t the '=' and the value
-ATTVALUE_VALUE
-    : [ ]* ATTRIBUTE -> popMode
-    ;
-
-ATTRIBUTE
-    : DOUBLE_QUOTE_STRING
-    | SINGLE_QUOTE_STRING
-    | ATTCHARS
-    | HEXCHARS
-    | DECCHARS
-    ;
-
-fragment ATTCHAR
-    : '-'
-    | '_'
-    | '.'
-    | '/'
-    | '+'
-    | ','
-    | '?'
-    | '='
-    | ':'
-    | ';'
-    | '#'
-    | [0-9a-zA-Z]
-    ;
-
-fragment ATTCHARS
-    : ATTCHAR+ ' '?
-    ;
-
-fragment HEXCHARS
-    : '#' [0-9a-fA-F]+
-    ;
-
-fragment DECCHARS
-    : [0-9]+ '%'?
-    ;
-
-fragment DOUBLE_QUOTE_STRING
-    : '"' ~[<"]* '"'
-    ;
-fragment SINGLE_QUOTE_STRING
-    : '\'' ~[<']* '\''
-;
+NAME_SVG				: 'svg' ;
+NAME_CIRCLE				: 'circle' ;
+NAME_RECT				: 'rect' ;
+NAME_ELLIPSE			: 'ellipse' ;
+NAME_LINE				: 'line' ;
+NAME_POLYGON			: 'polygon' ;
+NAME_POLYLINE			: 'polyline' ;
+NAME_PATH				: 'path' ;
+NAME_TEXT				: 'text' ;
+NAME_G					: 'g' ;
+NAME_DEFS				: 'defs' ;
+NAME_FILTER				: 'filter' ;
+NAME_LINEARGRADIENT		: 'linearGradient' ;
+NAME_RADIALGRADIENT		: 'radialGradient' ;
+NAME_STOP				: 'stop' ;
+				
+NAME	: [a-zA-Z:]+ ;
+CLOSE 			: '>' 		-> popMode ;
+SLASH_CLOSE 	: '/>'		-> popMode ;
+SLASH			: '/' ;
+EQUALS			: '=' ;
+STRING			: '"' ~[<"]* '"'
+				| '\'' ~[<']* '\''
+				;
+// skip whitespace again, because of inner mode ~
+WS_INSIDE  :   [ \t\n\r]+ -> skip ;
+// skip SVG/XML comments
+COMMENT_INSIDE 	: '<!--' .*? '-->'  -> skip ;

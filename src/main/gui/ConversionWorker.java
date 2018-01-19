@@ -54,30 +54,19 @@ public class ConversionWorker extends SwingWorker<Boolean, String> {
 
 		// parse File
 		publish("Parsing SVG-file '" + sourceFile.getName() + "' with antlr4:");
-		new SVGParserBuilder(sourceFile);
-		Thread.sleep(1000);
+		SVGParserBuilder parserBuilder = new SVGParserBuilder(sourceFile);
+		parserBuilder.parseFile();
+		//Thread.sleep(1000);
 		publish("done!");
 		setProgress(20);
 
-		// generating target language using parseTree:
-		publish("Generating TikZ-code using parse-tree:");
-		new TikzBuilder();
-		Thread.sleep(1000);
-		publish("done!");
-		setProgress(80);
-
-		// putting together latex document
-		publish("Building LateX-template containing TikZ-Code:");
-		LatexBuilder lb = new LatexBuilder();
-		Thread.sleep(1000);
-		publish("done!");
-		setProgress(90);
 
 		// writing output File
-		publish("Writing output file to "+targetDirectory.getAbsolutePath()+" :");
+		publish("Building LateX-template containing TikZ-Code & Writing output file to "+targetDirectory.getAbsolutePath()+" :");
 		String targetFileName = sourceFile.getName();
-		lb.writeToFile(targetDirectory,targetFileName);
-		Thread.sleep(1000);
+		targetFileName = targetFileName.replaceAll(".svg", ".tex");
+		parserBuilder.generateLatex(targetDirectory,targetFileName);
+		//Thread.sleep(1000);
 		publish("done!");
 		setProgress(100);
 

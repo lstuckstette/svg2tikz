@@ -14,14 +14,13 @@ import org.antlr.v4.runtime.TokenStream;
 import main.antlr4.SVGLexer;
 import main.antlr4.SVGParser;
 
-
-
-
-
 public class SVGParserBuilder {
 
+	private SVGParser svgParser;
+	private TikzBuilder tikzBuilder;
+	
 	public SVGParserBuilder(File sourceFile) {
-		//System.out.println("SVGParser HW!");
+		tikzBuilder = new TikzBuilder();
 		
 		try {
 			//FileinputStream -> CharStream
@@ -31,13 +30,8 @@ public class SVGParserBuilder {
 			//Get TokenStream from Lexer
 			TokenStream tokenStream = new CommonTokenStream(svgLexer);			
 			//Build Parser
-			SVGParser svgParser = new SVGParser(tokenStream);
-			//Build new Parselistener
-			SVGParseListener parseListener = new SVGParseListener();
-			svgParser.addParseListener(parseListener);
-			//Get 'root' element (hopefully the 'svg' element)
-			//SvgRootContext svgCtx = svgParser.svgRoot();
-			svgParser.svgRoot();
+			svgParser = new SVGParser(tokenStream);
+			
 			
 			//syso complete tree!
 			//System.out.println(svgCtx.toStringTree(svgParser));
@@ -50,6 +44,22 @@ public class SVGParserBuilder {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void parseFile() {
+		//Build new Parselistener
+		SVGParseListener parseListener = new SVGParseListener(tikzBuilder);
+		svgParser.addParseListener(parseListener);
+		//Get 'root' element (hopefully the 'svg' element)
+		//SvgRootContext svgCtx = svgParser.svgRoot();
+		svgParser.svgRoot();
+		
+	}
+	
+	public void generateLatex(File targetDirectory,String filename) {
+		LatexBuilder lb = new LatexBuilder();
+		lb.processTikZStringBuilder(tikzBuilder.getStringBuilder());
+		lb.writeToFile(targetDirectory, filename);
 	}
 
 }

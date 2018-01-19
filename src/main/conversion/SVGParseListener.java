@@ -1,5 +1,8 @@
 package main.conversion;
 
+import java.util.List;
+
+import main.antlr4.SVGParser.AttributeContext;
 import main.antlr4.SVGParser.CircleContext;
 import main.antlr4.SVGParser.DefsContext;
 import main.antlr4.SVGParser.EllipseContext;
@@ -21,20 +24,25 @@ import main.antlr4.SVGParserBaseListener;
 
 public class SVGParseListener extends SVGParserBaseListener {
 
+	private TikzBuilder tikzBuilder;
 	private int pathCount = 0;
-	public SVGParseListener() {
-		
+
+	public SVGParseListener(TikzBuilder tikzBuilder) {
+		this.tikzBuilder = tikzBuilder;
 	}
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		System.out.println("SAW "+pathCount+" Paths. =)");
+		System.out.println("SAW " + pathCount + " Paths. =)");
 	}
 
 	@Override
 	public void exitCircle(CircleContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitCircle(ctx);
+		List<AttributeContext> list = ctx.attribute();
+		for(AttributeContext a : list) {
+			System.out.println("Attribute Name: "+a.NAME());
+			System.out.println("Attribute Value: "+a.STRING());
+		}
 	}
 
 	@Override
@@ -70,9 +78,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void exitPath(PathContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 		pathCount++;
-		
+
 	}
 
 	@Override
@@ -126,9 +134,5 @@ public class SVGParseListener extends SVGParserBaseListener {
 	public void exitUnnamedElement_SelfClose(UnnamedElement_SelfCloseContext ctx) {
 		System.out.println("FOUND UNKNOWN NODE! IGNORING.");
 	}
-
-	
-	
-	
 
 }

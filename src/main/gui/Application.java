@@ -103,7 +103,7 @@ public class Application extends JFrame {
 		add(new JLabel("Target Path: "), constraints);
 
 		targetPathTextField = new JTextField();
-		targetPathTextField.setText("C:\\");
+		targetPathTextField.setText(".\\");
 		constraints = new GridBagConstraints();
 		constraints.gridx = 1;
 		constraints.gridy = 0;

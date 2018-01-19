@@ -33,7 +33,7 @@ public class LatexBuilder {
 		 */
 		content.append(input);
 
-		finishLatex();
+		
 
 	}
 
@@ -43,7 +43,11 @@ public class LatexBuilder {
 	}
 
 	public void writeToFile(File targetDirectory,String filename) {
+		finishLatex();
 		File outputFile = new File(targetDirectory.getAbsolutePath()+"\\"+filename);
+		
+		
+		
 		try {
 			FileUtils.writeStringToFile(outputFile, content.toString(), Charset.forName("UTF-8"));
 		} catch (IOException e) {

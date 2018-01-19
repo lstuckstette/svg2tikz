@@ -1,9 +1,5 @@
 package main.conversion;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import main.antlr4.SVGParser.CircleContext;
 import main.antlr4.SVGParser.DefsContext;
 import main.antlr4.SVGParser.EllipseContext;
@@ -25,14 +21,14 @@ import main.antlr4.SVGParserBaseListener;
 
 public class SVGParseListener extends SVGParserBaseListener {
 
+	private int pathCount = 0;
 	public SVGParseListener() {
 		
 	}
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitSvgRoot(ctx);
+		System.out.println("SAW "+pathCount+" Paths. =)");
 	}
 
 	@Override
@@ -74,7 +70,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void exitPath(PathContext ctx) {
 		// TODO Auto-generated method stub
-		System.out.println("SAW A PATH!! =)");
+		
+		pathCount++;
 		
 	}
 

@@ -2,8 +2,31 @@ package main.conversion;
 
 public class TikzBuilder {
 
+	private StringBuilder content;
+
 	public TikzBuilder() {
-		System.out.println("TikzBuilder HW!");
+		content = new StringBuilder();
+		initTikZ();
+	}
+	
+	private void initTikZ() {
+		/*
+		 * TODO: write leadin:
+		 */
+	}
+
+	public void appendString(String input) {
+
+		content.append(input);
+	}
+
+	public String toString() {
+
+		return content.toString();
+	}
+
+	public StringBuilder getStringBuilder() {
+		return content;
 	}
 
 }

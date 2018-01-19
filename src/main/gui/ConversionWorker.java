@@ -75,7 +75,8 @@ public class ConversionWorker extends SwingWorker<Boolean, String> {
 
 		// writing output File
 		publish("Writing output file to "+targetDirectory.getAbsolutePath()+" :");
-		lb.writeToFile(targetDirectory);
+		String targetFileName = sourceFile.getName();
+		lb.writeToFile(targetDirectory,targetFileName);
 		Thread.sleep(1000);
 		publish("done!");
 		setProgress(100);

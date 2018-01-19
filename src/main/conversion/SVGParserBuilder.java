@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.TokenStream;
 
 import main.antlr4.SVGLexer;
 import main.antlr4.SVGParser;
-import main.antlr4.SVGParser.SvgRootContext;
 
 
 
@@ -37,8 +36,8 @@ public class SVGParserBuilder {
 			SVGParseListener parseListener = new SVGParseListener();
 			svgParser.addParseListener(parseListener);
 			//Get 'root' element (hopefully the 'svg' element)
-			SvgRootContext svgCtx = svgParser.svgRoot();
-			
+			//SvgRootContext svgCtx = svgParser.svgRoot();
+			svgParser.svgRoot();
 			
 			//syso complete tree!
 			//System.out.println(svgCtx.toStringTree(svgParser));

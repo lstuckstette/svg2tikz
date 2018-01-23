@@ -12,6 +12,8 @@ import main.antlr4.SVGParser.GContext;
 import main.antlr4.SVGParser.LineContext;
 import main.antlr4.SVGParser.LinearGradientContext;
 import main.antlr4.SVGParser.PathContext;
+import main.antlr4.SVGParser.Path_element_cubiccurve_relContext;
+import main.antlr4.SVGParser.Path_element_movetoContext;
 import main.antlr4.SVGParser.Path_element_moveto_relContext;
 import main.antlr4.SVGParser.PolygonContext;
 import main.antlr4.SVGParser.PolylineContext;
@@ -245,6 +247,11 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath(PathContext ctx) {
+		/*
+		 * gute quelle:
+		 * https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
+		 * 
+		 */
 	
 		List<AttributeContext> list = ctx.attribute();
 		for (AttributeContext a : list) {
@@ -260,15 +267,19 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	}
 
+	
+
 	@Override
-	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
-		
-		
+	public void exitPath_element_moveto(Path_element_movetoContext ctx) {
+		// TODO Auto-generated method stub
+		super.exitPath_element_moveto(ctx);
 	}
-	
-	
-	
-	
+
+	@Override
+	public void exitPath_element_cubiccurve_rel(Path_element_cubiccurve_relContext ctx) {
+		// TODO Auto-generated method stub
+		super.exitPath_element_cubiccurve_rel(ctx);
+	}
 
 	@Override
 	public void exitText(TextContext ctx) {
@@ -276,41 +287,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		super.exitText(ctx);
 	}
 
-	@Override
-	public void exitG(GContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitG(ctx);
-	}
 
-	@Override
-	public void exitFilter(FilterContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitFilter(ctx);
-	}
-
-	@Override
-	public void exitStop(StopContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitStop(ctx);
-	}
-
-	@Override
-	public void exitDefs(DefsContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitDefs(ctx);
-	}
-
-	@Override
-	public void exitLinearGradient(LinearGradientContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitLinearGradient(ctx);
-	}
-
-	@Override
-	public void exitRadialGradient(RadialGradientContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitRadialGradient(ctx);
-	}
 
 	@Override
 	public void exitUnnamedElement(UnnamedElementContext ctx) {

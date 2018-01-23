@@ -229,6 +229,186 @@ public class SVGParserBaseListener implements SVGParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttribute(SVGParser.AttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_attribute(SVGParser.Path_attributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_attribute(SVGParser.Path_attributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_elements(SVGParser.Path_elementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_elements(SVGParser.Path_elementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_moveto_rel(SVGParser.Path_element_moveto_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_moveto_rel(SVGParser.Path_element_moveto_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_moveto(SVGParser.Path_element_movetoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_moveto(SVGParser.Path_element_movetoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_lineto_rel(SVGParser.Path_element_lineto_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_lineto_rel(SVGParser.Path_element_lineto_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_lineto(SVGParser.Path_element_linetoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_lineto(SVGParser.Path_element_linetoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_horizontalline_rel(SVGParser.Path_element_horizontalline_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_horizontalline_rel(SVGParser.Path_element_horizontalline_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_horizontalline(SVGParser.Path_element_horizontallineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_horizontalline(SVGParser.Path_element_horizontallineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_verticalline_rel(SVGParser.Path_element_verticalline_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_verticalline_rel(SVGParser.Path_element_verticalline_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_verticalline(SVGParser.Path_element_verticallineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_verticalline(SVGParser.Path_element_verticallineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_close(SVGParser.Path_element_closeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_close(SVGParser.Path_element_closeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_cubiccurve_rel(SVGParser.Path_element_cubiccurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_cubiccurve_rel(SVGParser.Path_element_cubiccurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_cubiccurve(SVGParser.Path_element_cubiccurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_cubiccurve(SVGParser.Path_element_cubiccurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_cubicreflectcurve_rel(SVGParser.Path_element_cubicreflectcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_cubicreflectcurve_rel(SVGParser.Path_element_cubicreflectcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

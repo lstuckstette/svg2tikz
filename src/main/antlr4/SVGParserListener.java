@@ -221,4 +221,154 @@ public interface SVGParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttribute(SVGParser.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_attribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_attribute(SVGParser.Path_attributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_attribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_attribute(SVGParser.Path_attributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_elements}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_elements(SVGParser.Path_elementsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_elements}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_elements(SVGParser.Path_elementsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_moveto_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_moveto_rel(SVGParser.Path_element_moveto_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_moveto_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_moveto_rel(SVGParser.Path_element_moveto_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_moveto}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_moveto(SVGParser.Path_element_movetoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_moveto}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_moveto(SVGParser.Path_element_movetoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_lineto_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_lineto_rel(SVGParser.Path_element_lineto_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_lineto_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_lineto_rel(SVGParser.Path_element_lineto_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_lineto}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_lineto(SVGParser.Path_element_linetoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_lineto}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_lineto(SVGParser.Path_element_linetoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_horizontalline_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_horizontalline_rel(SVGParser.Path_element_horizontalline_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_horizontalline_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_horizontalline_rel(SVGParser.Path_element_horizontalline_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_horizontalline}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_horizontalline(SVGParser.Path_element_horizontallineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_horizontalline}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_horizontalline(SVGParser.Path_element_horizontallineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_verticalline_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_verticalline_rel(SVGParser.Path_element_verticalline_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_verticalline_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_verticalline_rel(SVGParser.Path_element_verticalline_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_verticalline}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_verticalline(SVGParser.Path_element_verticallineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_verticalline}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_verticalline(SVGParser.Path_element_verticallineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_close}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_close(SVGParser.Path_element_closeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_close}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_close(SVGParser.Path_element_closeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_cubiccurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_cubiccurve_rel(SVGParser.Path_element_cubiccurve_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_cubiccurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_cubiccurve_rel(SVGParser.Path_element_cubiccurve_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_cubiccurve}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_cubiccurve(SVGParser.Path_element_cubiccurveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_cubiccurve}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_cubiccurve(SVGParser.Path_element_cubiccurveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_cubicreflectcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_cubicreflectcurve_rel(SVGParser.Path_element_cubicreflectcurve_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_cubicreflectcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_cubicreflectcurve_rel(SVGParser.Path_element_cubicreflectcurve_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_cubicreflectcurve}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_cubicreflectcurve}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx);
 }

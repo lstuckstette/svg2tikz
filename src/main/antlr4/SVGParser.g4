@@ -18,7 +18,7 @@ element	: '<' 'circle' attribute+ '/>'													# Circle
 		| '<' 'line' attribute+ '/>'													# Line
 		| '<' 'polygon' attribute+ '/>'													# Polygon
 		| '<' 'polyline' attribute+ '/>'												# Polyline
-		| '<' 'path' attribute+ '/>'													# Path
+		| '<' 'path' path_attribute+ attribute* '/>'													# Path
 		| '<' 'text' attribute+ '/>'													# Text
 		| '<' 'g' attribute* '>' element+ '<' SLASH 'g' '>'								# G
 		| '<' 'filter' attribute+ '/>'													# Filter							
@@ -33,6 +33,44 @@ element	: '<' 'circle' attribute+ '/>'													# Circle
 
 			
 attribute	: NAME '=' STRING ;
+
+path_attribute : 'd="' path_elements+ '"';
+
+path_elements	: path_element_moveto
+				| path_element_moveto_rel
+				| path_element_lineto_rel
+				| path_element_lineto
+				| path_element_horizontalline_rel
+				| path_element_horizontalline
+				| path_element_verticalline_rel
+				| path_element_verticalline
+				| path_element_close
+				;
+
+path_element_moveto_rel			: 'm' BLANK* NUMBER BLANK* NUMBER ;
+path_element_moveto				: 'M' BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_lineto_rel			: 'l' BLANK* NUMBER BLANK* NUMBER ;
+path_element_lineto				: 'L' BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_horizontalline_rel	: 'h' BLANK* NUMBER ;
+path_element_horizontalline		: 'H' BLANK* NUMBER ;
+
+path_element_verticalline_rel	: 'v' BLANK* NUMBER ;
+path_element_verticalline		: 'V' BLANK* NUMBER ;
+
+path_element_close				: 'z' 
+								| 'Z'
+								;
+path_element_cubiccurve_rel		: 'c' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+path_element_cubiccurve			: 'C' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_cubicreflectcurve_rel		: 's' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER  ;
+path_element_cubicreflectcurve			: 'S' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER  ;
+
+
+
+				 
 /*
 omitted elements:
 

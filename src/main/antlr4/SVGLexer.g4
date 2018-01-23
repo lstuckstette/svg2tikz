@@ -44,15 +44,46 @@ NAME_LINEARGRADIENT		: 'linearGradient' ;
 NAME_RADIALGRADIENT		: 'radialGradient' ;
 NAME_STOP				: 'stop' ;
 				
-NAME	: [a-zA-Z:-]+ ;
+NAME	: [a-zA-Z0-9:-]+ ;
 CLOSE 			: '>' 		-> popMode ;
 SLASH_CLOSE 	: '/>'		-> popMode ;
 SLASH			: '/' ;
 EQUALS			: '=' ;
-STRING			: '"' ~[<"]* '"'
-				| '\'' ~[<']* '\''
-				;
+PATH_ATTRIBUTE	: 'd="' 		-> pushMode(PATHATTRIBUTE);
+STRING			: '"' ~[<"]* '"' ;
+				
+				
+
+
+
+
 // skip whitespace again, because of inner mode ~
 WS_INSIDE  :   [ \t\n\r]+ -> skip ;
 // skip SVG/XML comments
 COMMENT_INSIDE 	: '<!--' .*? '-->'  -> skip ;
+
+mode PATHATTRIBUTE;
+
+ATTRIBUTECLOSE		: '"' -> popMode ;
+BLANK				: [ ,];
+PATH_M_REL			: 'm';
+PATH_M				: 'M';
+PATH_L_REL			: 'l';
+PATH_L				: 'L';
+PATH_H_REL			: 'h';
+PATH_H				: 'H';
+PATH_V_REL			: 'v';
+PATH_V				: 'V';
+PATH_Z_REL			: 'z';
+PATH_Z				: 'Z';
+PATH_C_REL			: 'c';
+PATH_C				: 'C';
+PATH_S_REL			: 's';
+PATH_S				: 'S';
+
+NUMBER : INT
+	   | FLOAT
+	   ;
+fragment INT	: [0-9]+ ;
+fragment FLOAT	: INT+ '.' INT+;
+

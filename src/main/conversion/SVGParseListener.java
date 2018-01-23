@@ -12,6 +12,7 @@ import main.antlr4.SVGParser.GContext;
 import main.antlr4.SVGParser.LineContext;
 import main.antlr4.SVGParser.LinearGradientContext;
 import main.antlr4.SVGParser.PathContext;
+import main.antlr4.SVGParser.Path_element_moveto_relContext;
 import main.antlr4.SVGParser.PolygonContext;
 import main.antlr4.SVGParser.PolylineContext;
 import main.antlr4.SVGParser.RadialGradientContext;
@@ -244,39 +245,30 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath(PathContext ctx) {
-		String[] pathElem = new String[3];
+	
 		List<AttributeContext> list = ctx.attribute();
 		for (AttributeContext a : list) {
-			// System.out.println("Attribute Name: " + a.NAME());
-			// System.out.println("Attribute Value: " + a.STRING());
-
-			switch (a.NAME().toString()) {
-			case "d":
-				pathElem[1] = "\\draw [fill=tmpcolor] svg {" + a.STRING().toString() + "};";
-				break;
-			case "style":
-				String[] stylevalues = a.STRING().toString().split(";");
-				for (String s : stylevalues) {
-					if (s.startsWith("\"fill")) {
-						String[] fillColor = s.split(":");
-						int R = Integer.parseInt(fillColor[1].substring(1, 3), 16);
-						int G = Integer.parseInt(fillColor[1].substring(3, 5), 16);
-						int B = Integer.parseInt(fillColor[1].substring(5, 7), 16);
-						// System.out.println(fillColor[1] +" -> "+R + " " + G + " " + B);
-						pathElem[0] = "\\definecolor{tmpcolor}{RGB}{" + R + "," + G + "," + B + "}";
-						break;
-					}
-				}
-				break;
-			default:
+			switch(a.NAME().toString()) {
+			
+			case "transform": 
+				//TODO: handle transform!
 				break;
 			}
 		}
-		tikzBuilder.appendString(pathElem[0]);
-		tikzBuilder.appendString(pathElem[1]);
+		
 		pathCount++;
 
 	}
+
+	@Override
+	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
+		
+		
+	}
+	
+	
+	
+	
 
 	@Override
 	public void exitText(TextContext ctx) {

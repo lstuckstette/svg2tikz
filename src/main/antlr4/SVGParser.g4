@@ -29,12 +29,12 @@ element	: '<' 'circle' attribute+ '/>'													# Circle
 		| '<' NAME attribute* element* '>' 												# UnnamedElement
 		| '<' NAME attribute* '/>'														# UnnamedElement_SelfClose
 		;
-			
 
+path_attribute 	: 'd="' path_elements+ '"';
 			
-attribute	: NAME '=' STRING ;
+attribute		: NAME '=' STRING ;
 
-path_attribute : 'd="' path_elements+ '"';
+
 
 path_elements	: path_element_moveto
 				| path_element_moveto_rel
@@ -65,8 +65,17 @@ path_element_close				: 'z'
 path_element_cubiccurve_rel		: 'c' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
 path_element_cubiccurve			: 'C' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
 
-path_element_cubicreflectcurve_rel		: 's' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER  ;
-path_element_cubicreflectcurve			: 'S' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER  ;
+path_element_cubicreflectcurve_rel		: 's' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+path_element_cubicreflectcurve			: 'S' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_quadraticcurve_rel	: 'q'  BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+path_element_quadraticcurve	: 'Q'  BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_quadraticreflectcurve_rel	: 't'  BLANK* NUMBER BLANK* NUMBER ;
+path_element_quadraticreflectcurve	: 'T'  BLANK* NUMBER BLANK* NUMBER ;
+
+path_element_arc_rel			: 'a' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
+path_element_arc				: 'A' BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER BLANK* NUMBER ;
 
 
 

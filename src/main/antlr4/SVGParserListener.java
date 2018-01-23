@@ -212,16 +212,6 @@ public interface SVGParserListener extends ParseTreeListener {
 	 */
 	void exitUnnamedElement_SelfClose(SVGParser.UnnamedElement_SelfCloseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SVGParser#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterAttribute(SVGParser.AttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SVGParser#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitAttribute(SVGParser.AttributeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SVGParser#path_attribute}.
 	 * @param ctx the parse tree
 	 */
@@ -231,6 +221,16 @@ public interface SVGParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPath_attribute(SVGParser.Path_attributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttribute(SVGParser.AttributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttribute(SVGParser.AttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SVGParser#path_elements}.
 	 * @param ctx the parse tree
@@ -371,4 +371,64 @@ public interface SVGParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_quadraticcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_quadraticcurve_rel(SVGParser.Path_element_quadraticcurve_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_quadraticcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_quadraticcurve_rel(SVGParser.Path_element_quadraticcurve_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_quadraticcurve}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_quadraticcurve(SVGParser.Path_element_quadraticcurveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_quadraticcurve}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_quadraticcurve(SVGParser.Path_element_quadraticcurveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_quadraticreflectcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_quadraticreflectcurve_rel(SVGParser.Path_element_quadraticreflectcurve_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_quadraticreflectcurve_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_quadraticreflectcurve_rel(SVGParser.Path_element_quadraticreflectcurve_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_quadraticreflectcurve}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_quadraticreflectcurve(SVGParser.Path_element_quadraticreflectcurveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_quadraticreflectcurve}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_quadraticreflectcurve(SVGParser.Path_element_quadraticreflectcurveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_arc_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_arc_rel(SVGParser.Path_element_arc_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_arc_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_arc_rel(SVGParser.Path_element_arc_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#path_element_arc}.
+	 * @param ctx the parse tree
+	 */
+	void enterPath_element_arc(SVGParser.Path_element_arcContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#path_element_arc}.
+	 * @param ctx the parse tree
+	 */
+	void exitPath_element_arc(SVGParser.Path_element_arcContext ctx);
 }

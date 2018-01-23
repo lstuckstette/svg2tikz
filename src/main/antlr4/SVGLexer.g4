@@ -80,10 +80,17 @@ PATH_C_REL			: 'c';
 PATH_C				: 'C';
 PATH_S_REL			: 's';
 PATH_S				: 'S';
+PATH_Q_REL			: 'q';
+PATH_Q				: 'Q';
+PATH_T_REL			: 't';
+PATH_T				: 'T';
+PATH_A_REL			: 'a';
+PATH_A				: 'A';
 
 NUMBER : INT
 	   | FLOAT
 	   ;
 fragment INT	: [0-9]+ ;
-fragment FLOAT	: INT+ '.' INT+;
+fragment FLOAT	: INT+ '.' INT+
+				| INT+ 'e' INT+;
 

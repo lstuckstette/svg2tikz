@@ -222,18 +222,6 @@ public class SVGParserBaseListener implements SVGParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAttribute(SVGParser.AttributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAttribute(SVGParser.AttributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPath_attribute(SVGParser.Path_attributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -241,6 +229,18 @@ public class SVGParserBaseListener implements SVGParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPath_attribute(SVGParser.Path_attributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAttribute(SVGParser.AttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttribute(SVGParser.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -409,6 +409,78 @@ public class SVGParserBaseListener implements SVGParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPath_element_cubicreflectcurve(SVGParser.Path_element_cubicreflectcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_quadraticcurve_rel(SVGParser.Path_element_quadraticcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_quadraticcurve_rel(SVGParser.Path_element_quadraticcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_quadraticcurve(SVGParser.Path_element_quadraticcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_quadraticcurve(SVGParser.Path_element_quadraticcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_quadraticreflectcurve_rel(SVGParser.Path_element_quadraticreflectcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_quadraticreflectcurve_rel(SVGParser.Path_element_quadraticreflectcurve_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_quadraticreflectcurve(SVGParser.Path_element_quadraticreflectcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_quadraticreflectcurve(SVGParser.Path_element_quadraticreflectcurveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_arc_rel(SVGParser.Path_element_arc_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_arc_rel(SVGParser.Path_element_arc_relContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPath_element_arc(SVGParser.Path_element_arcContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPath_element_arc(SVGParser.Path_element_arcContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

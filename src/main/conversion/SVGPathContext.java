@@ -1,5 +1,6 @@
 package main.conversion;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class SVGPathContext {
@@ -22,9 +23,39 @@ public class SVGPathContext {
 	}
 
 	public String getTikZString() {
-		/*
-		 * TODO: implement generation!
-		 */
+		StringBuilder builder = new StringBuilder();
+		ArrayList<String> settings = new ArrayList<>();
+		// Setup path enviroment:
+		if (fillColor != null) {
+			if (!fillColor.equals("none")) {
+				Color fillC = Color.decode(fillColor);
+				builder.append("\\definecolor{fillColor}{RGB}{" + fillC.getRed() + "," + fillC.getGreen() + ","
+						+ fillC.getBlue() + "}");
+				settings.add("fill=fillColor");
+			}
+		}
+		if (strokeColor != null) {
+			if (!strokeColor.equals("none")) {
+				Color strokeC = Color.decode(strokeColor); // convert hex rgb to decimal rgb
+				builder.append("\\definecolor{strokeColor}{RGB}{" + strokeC.getRed() + "," + strokeC.getGreen() + ","
+						+ strokeC.getBlue() + "}");
+				settings.add("draw=strokeColor");
+			}
+		}
+		if (strokeWidth != null) {
+			if (!strokeWidth.equals("none")) {
+
+				settings.add("line width=" + strokeWidth);
+			}
+		}
+
+		String settingsJoined = "";
+		for (String s : settings) {
+			settingsJoined += s + ",";			// join settings
+		}
+		settingsJoined = settingsJoined.substring(0, settingsJoined.length()-1); //crop last ','
+
+		builder.append("\\path []");
 		return null;
 	}
 
@@ -40,8 +71,6 @@ public class SVGPathContext {
 		return currentY;
 	}
 
-	
-	
 	public String getStartX() {
 		return startX;
 	}
@@ -67,23 +96,23 @@ public class SVGPathContext {
 	}
 
 	public void setFillColor(String fillColor) {
-		this.fillColor = fillColor;
+		this.fillColor = fillColor.replaceAll("\"", "");
 	}
 
 	public void setStrokeColor(String strokeColor) {
-		this.strokeColor = strokeColor;
+		this.strokeColor = strokeColor.replaceAll("\"", "");
 	}
 
 	public void setStrokeWidth(String strokeWidth) {
-		this.strokeWidth = strokeWidth;
+		this.strokeWidth = strokeWidth.replaceAll("\"", "");
 	}
 
 	public void setStyleContainer(String styleContainer) {
-		this.styleContainer = styleContainer;
+		this.styleContainer = styleContainer.replaceAll("\"", "");
 	}
 
 	public void setTransformation(String transformation) {
-		this.transformation = transformation;
+		this.transformation = transformation.replaceAll("\"", "");
 	}
 
 }

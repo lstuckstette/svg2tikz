@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import main.antlr4.SVGLexer;
 import main.antlr4.SVGParser;
@@ -17,10 +19,11 @@ import main.antlr4.SVGParser;
 public class SVGParserBuilder {
 
 	private SVGParser svgParser;
-	private TikzBuilder tikzBuilder;
+
+	ByteArrayOutputStream tikzOutput;
 	
 	public SVGParserBuilder(File sourceFile) {
-		tikzBuilder = new TikzBuilder();
+		tikzOutput = new ByteArrayOutputStream();
 		
 		try {
 			//FileinputStream -> CharStream
@@ -48,7 +51,7 @@ public class SVGParserBuilder {
 	
 	public void parseFile() {
 		//Build new Parselistener
-		SVGParseListener parseListener = new SVGParseListener(tikzBuilder);
+		SVGParseListener parseListener = new SVGParseListener(tikzOutput);
 		svgParser.addParseListener(parseListener);
 		//Get 'root' element (hopefully the 'svg' element)
 		//SvgRootContext svgCtx = svgParser.svgRoot();
@@ -58,7 +61,7 @@ public class SVGParserBuilder {
 	
 	public void generateLatex(File targetDirectory,String filename) {
 		LatexBuilder lb = new LatexBuilder();
-		lb.processTikZStringBuilder(tikzBuilder.getStringBuilder());
+		lb.processTikZStringBuilder(tikzOutput.toString(Charset.forName("UFT-8")));
 		lb.writeToFile(targetDirectory, filename);
 	}
 

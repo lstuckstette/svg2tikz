@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import main.antlr4.SVGParser.AttributeContext;
 import main.antlr4.SVGParser.CircleContext;
@@ -38,8 +39,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 	private SVGPathContext currentPath;
 	private TikzGraphics2D tGraphics;
 
-	public SVGParseListener(TikzBuilder tikzBuilder) {
-		tGraphics = new TikzGraphics2D();
+	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
+		tGraphics = new TikzGraphics2D(tikzOutput);
 	}
 
 	@Override

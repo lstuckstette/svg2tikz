@@ -21,13 +21,11 @@ public class LatexBuilder {
 
 		appendLine("\\documentclass{article}");
 		appendLine("\\usepackage{tikz}");
-		appendLine("\\usetikzlibrary{svg.path}");
 		appendLine("\\begin{document}");
-		appendLine("EXAMPLE LATEX DOC!");
-		appendLine("\\begin{tikzpicture}");
+
 	}
 
-	public void processTikZStringBuilder(StringBuilder input) {
+	public void processTikZStringBuilder(String input) {
 
 		/*
 		 * TODO: embedd TikZ into latex document
@@ -39,7 +37,7 @@ public class LatexBuilder {
 	}
 
 	private void finishLatex() {
-		appendLine("\\end{tikzpicture}");
+
 		appendLine("\\end{document}");
 	}
 

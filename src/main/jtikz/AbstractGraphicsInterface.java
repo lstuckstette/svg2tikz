@@ -31,7 +31,7 @@ public abstract class AbstractGraphicsInterface extends Graphics2D implements Cl
         if(parent != null)
             parent.addCommand(command);
         else {
-            System.err.println("Command: " + command);
+            //System.err.println("Command: " + command);
             commands.addLast(new GraphicsCommand(command, this));
         }
     }
@@ -43,17 +43,17 @@ public abstract class AbstractGraphicsInterface extends Graphics2D implements Cl
     protected abstract AbstractGraphicsInterface newInstance();
 
     public final AbstractGraphicsInterface create() {
-        System.err.println("create()");
+        //System.err.println("create()");
         AbstractGraphicsInterface g = newInstance();
         children.add(g);
         g.parent = this;
         g.setClip(getClip());
         g.transform = new AffineTransform(transform);
-        System.err.println("Transform: " + g.transform);
+        //System.err.println("Transform: " + g.transform);
         return g;
     }
     public final AbstractGraphicsInterface create(int x, int y, int width, int height) {
-        System.err.println("create(" + x + ", " + y + ", " + width + ", " + height + ", " + currentClip + ")");
+        //System.err.println("create(" + x + ", " + y + ", " + width + ", " + height + ", " + currentClip + ")");
         AbstractGraphicsInterface g = create();
         g.setClip(x, y, width, height);
         g.translate(x, y);

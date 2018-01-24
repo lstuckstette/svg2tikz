@@ -31,19 +31,21 @@ import main.antlr4.SVGParser.TextContext;
 import main.antlr4.SVGParser.UnnamedElementContext;
 import main.antlr4.SVGParser.UnnamedElement_SelfCloseContext;
 import main.antlr4.SVGParserBaseListener;
+import main.jtikz.TikzGraphics2D;
 
 public class SVGParseListener extends SVGParserBaseListener {
 
-	private TikzBuilder tikzBuilder;
 	private SVGPathContext currentPath;
+	private TikzGraphics2D tGraphics;
 
 	public SVGParseListener(TikzBuilder tikzBuilder) {
-		this.tikzBuilder = tikzBuilder;
+		tGraphics = new TikzGraphics2D();
 	}
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-
+		
+		//
 	}
 
 	@Override
@@ -56,20 +58,19 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String r = "0";
 		String cx = "0";
 		String cy = "0";
-		
+
 		for (AttributeContext a : list) {
 			// System.out.println("Attribute Name: "+a.NAME());
 			// System.out.println("Attribute Value: "+a.STRING());
-			
-			String test=a.NAME().toString();
+
+			String test = a.NAME().toString();
 
 			if (a.NAME().toString().equals("r")) {
 				r = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(r);
-				while(m.find())
-				{
-				    r=m.group();
+				while (m.find()) {
+					r = m.group();
 				}
 			}
 
@@ -77,9 +78,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				cx = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(cx);
-				while(m.find())
-				{
-				    cx=m.group();
+				while (m.find()) {
+					cx = m.group();
 				}
 			}
 
@@ -87,17 +87,16 @@ public class SVGParseListener extends SVGParserBaseListener {
 				cy = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(cy);
-				while(m.find())
-				{
-				    cy=m.group();
+				while (m.find()) {
+					cy = m.group();
 				}
 			}
 
 		}
-		
+
 		String path = "\\draw (" + cx + "," + cy + ") circle (" + r + ");";
 
-		tikzBuilder.appendString(path);
+		// tikzBuilder.appendString(path);
 
 	}
 
@@ -112,16 +111,15 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String y = "0";
 		String width = "0";
 		String height = "0";
-		
+
 		for (AttributeContext a : list) {
 
 			if (a.NAME().toString().equals("x")) {
 				x = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(x);
-				while(m.find())
-				{
-				    x=m.group();
+				while (m.find()) {
+					x = m.group();
 				}
 			}
 
@@ -129,9 +127,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				y = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(y);
-				while(m.find())
-				{
-				    y=m.group();
+				while (m.find()) {
+					y = m.group();
 				}
 			}
 
@@ -139,9 +136,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				width = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(width);
-				while(m.find())
-				{
-				    width=m.group();
+				while (m.find()) {
+					width = m.group();
 				}
 			}
 
@@ -149,18 +145,17 @@ public class SVGParseListener extends SVGParserBaseListener {
 				height = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(height);
-				while(m.find())
-				{
-				    height=m.group();
+				while (m.find()) {
+					height = m.group();
 				}
 			}
 
 		}
-		
+
 		String path = "\\draw (" + x + "," + y + ") -- (" + height + "," + y + ") -- (" + height + "," + width
 				+ ") -- (" + x + "," + width + ") -- (" + x + "," + y + ");";
 
-		tikzBuilder.appendString(path);
+		// tikzBuilder.appendString(path);
 	}
 
 	@Override
@@ -174,16 +169,15 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String cy = "0";
 		String rx = "0";
 		String ry = "0";
-		
+
 		for (AttributeContext a : list) {
 
 			if (a.NAME().toString().equals("cx")) {
 				cx = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(cx);
-				while(m.find())
-				{
-				    cx=m.group();
+				while (m.find()) {
+					cx = m.group();
 				}
 			}
 
@@ -191,9 +185,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				cy = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(cy);
-				while(m.find())
-				{
-				    cy=m.group();
+				while (m.find()) {
+					cy = m.group();
 				}
 			}
 
@@ -201,9 +194,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				rx = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(rx);
-				while(m.find())
-				{
-				    rx=m.group();
+				while (m.find()) {
+					rx = m.group();
 				}
 			}
 
@@ -211,19 +203,19 @@ public class SVGParseListener extends SVGParserBaseListener {
 				ry = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(ry);
-				while(m.find())
-				{
-				    ry=m.group();
+				while (m.find()) {
+					ry = m.group();
 				}
 			}
-			
+
 		}
-		
+
 		String path = "\\draw (" + cx + "," + cy + ") ellipse (" + rx + " and " + ry + ");";
 
-		tikzBuilder.appendString(path);
+		// tikzBuilder.appendString(path);
 
 	}
+
 	@Override
 	public void exitLine(LineContext ctx) {
 		// TODO Auto-generated method stub
@@ -235,16 +227,15 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String y1 = "0";
 		String x2 = "0";
 		String y2 = "0";
-		
+
 		for (AttributeContext a : list) {
 
 			if (a.NAME().toString().equals("x1")) {
 				x1 = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(x1);
-				while(m.find())
-				{
-				    x1=m.group();
+				while (m.find()) {
+					x1 = m.group();
 				}
 			}
 
@@ -252,9 +243,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				y1 = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(y1);
-				while(m.find())
-				{
-				    y1=m.group();
+				while (m.find()) {
+					y1 = m.group();
 				}
 			}
 
@@ -262,9 +252,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 				x2 = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(x2);
-				while(m.find())
-				{
-				    x2=m.group();
+				while (m.find()) {
+					x2 = m.group();
 				}
 			}
 
@@ -272,133 +261,120 @@ public class SVGParseListener extends SVGParserBaseListener {
 				y2 = a.STRING().getText();
 				Pattern pp = Pattern.compile("\\d+");
 				Matcher m = pp.matcher(y2);
-				while(m.find())
-				{
-				    y2=m.group();
+				while (m.find()) {
+					y2 = m.group();
 				}
 			}
 
 		}
-		
+
 		String path = "\\draw (" + x1 + "," + y1 + ") -- (" + x2 + "," + y2 + ");";
 
-		tikzBuilder.appendString(path);
+		// tikzBuilder.appendString(path);
 	}
+
 	@Override
 	public void exitPolygon(PolygonContext ctx) {
 		// TODO Auto-generated method stub
 		super.exitPolygon(ctx);
-		
-		List<AttributeContext> list = ctx.attribute();
-		
-		String points="0,0";
-		
-		String coordinates="";		
-		
-		for(AttributeContext a : list) {
-			
-			if(a.NAME().toString().equals("points")){
-				
-				points=a.STRING().getText();
-				
-				String[] point = points.split(" ");
-				
-				for(int i=0;i<point.length;i++) {
-					
-					String coordinate=point[i];
-					
-					if(i==0)
-					{
-						coordinate=coordinate.substring(1);
-					}
-					
-					if(i+1==point.length)
-					{
-						coordinate=coordinate.substring(0,coordinate.length()-1);
-					}
-					
-					if(i+1<point.length)
-					{
-						coordinates=coordinates+" ("+coordinate+") --";	
-					}
-					else
-					{
-						coordinates=coordinates+" ("+coordinate+") -- cycle";
-					}
-		
-				}
-				
-			}
-			
-		}
-		
-		String scope="\\begin{scope}[xscale=1,yscale=-1]";
-		String path="\\draw"+coordinates+";";
-		String scope2="\\end{scope}";
-		
-		tikzBuilder.appendString(scope);
-		tikzBuilder.appendString(path);
-		tikzBuilder.appendString(scope2);
-	}
 
+		List<AttributeContext> list = ctx.attribute();
+
+		String points = "0,0";
+
+		String coordinates = "";
+
+		for (AttributeContext a : list) {
+
+			if (a.NAME().toString().equals("points")) {
+
+				points = a.STRING().getText();
+
+				String[] point = points.split(" ");
+
+				for (int i = 0; i < point.length; i++) {
+
+					String coordinate = point[i];
+
+					if (i == 0) {
+						coordinate = coordinate.substring(1);
+					}
+
+					if (i + 1 == point.length) {
+						coordinate = coordinate.substring(0, coordinate.length() - 1);
+					}
+
+					if (i + 1 < point.length) {
+						coordinates = coordinates + " (" + coordinate + ") --";
+					} else {
+						coordinates = coordinates + " (" + coordinate + ") -- cycle";
+					}
+
+				}
+
+			}
+
+		}
+
+		String scope = "\\begin{scope}[xscale=1,yscale=-1]";
+		String path = "\\draw" + coordinates + ";";
+		String scope2 = "\\end{scope}";
+
+		/*tikzBuilder.appendString(scope);
+		tikzBuilder.appendString(path);
+		tikzBuilder.appendString(scope2);*/
+	}
 
 	@Override
 	public void exitPolyline(PolylineContext ctx) {
 		// TODO Auto-generated method stub
 		super.exitPolyline(ctx);
-		
+
 		List<AttributeContext> list = ctx.attribute();
-	
-		String points="0,0";
-		
-		String coordinates="";
-		
-		
-		for(AttributeContext a : list) {
-			
-			if(a.NAME().toString().equals("points")){
-				
-				points=a.STRING().getText();
-				
+
+		String points = "0,0";
+
+		String coordinates = "";
+
+		for (AttributeContext a : list) {
+
+			if (a.NAME().toString().equals("points")) {
+
+				points = a.STRING().getText();
+
 				String[] point = points.split(" ");
-				
-				for(int i=0;i<point.length;i++) {
-					
-					String coordinate=point[i];
-					
-					if(i==0)
-					{
-						coordinate=coordinate.substring(1);
+
+				for (int i = 0; i < point.length; i++) {
+
+					String coordinate = point[i];
+
+					if (i == 0) {
+						coordinate = coordinate.substring(1);
 					}
-					
-					if(i+1==point.length)
-					{
-						coordinate=coordinate.substring(0,coordinate.length()-1);
+
+					if (i + 1 == point.length) {
+						coordinate = coordinate.substring(0, coordinate.length() - 1);
 					}
-					
-					if(i+1<point.length)
-					{
-						coordinates=coordinates+" ("+coordinate+") --";	
+
+					if (i + 1 < point.length) {
+						coordinates = coordinates + " (" + coordinate + ") --";
+					} else {
+						coordinates = coordinates + " (" + coordinate + ")";
 					}
-					else
-					{
-						coordinates=coordinates+" ("+coordinate+")";
-					}
-		
+
 				}
 			}
-			
-		}
-		
-		String scope="\\begin{scope}[xscale=1,yscale=-1]";
-		String path="\\draw"+coordinates+";";
-		String scope2="\\end{scope}";
-		
-		tikzBuilder.appendString(scope);
-		tikzBuilder.appendString(path);
-		tikzBuilder.appendString(scope2);
-	}
 
+		}
+
+		String scope = "\\begin{scope}[xscale=1,yscale=-1]";
+		String path = "\\draw" + coordinates + ";";
+		String scope2 = "\\end{scope}";
+
+		/*tikzBuilder.appendString(scope);
+		tikzBuilder.appendString(path);
+		tikzBuilder.appendString(scope2);*/
+	}
 
 	@Override
 	public void enterPath(PathContext ctx) {

@@ -3,6 +3,8 @@ package main.conversion;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import main.antlr4.SVGParser.AttributeContext;
 import main.antlr4.SVGParser.CircleContext;
 import main.antlr4.SVGParser.DefsContext;
@@ -12,7 +14,9 @@ import main.antlr4.SVGParser.GContext;
 import main.antlr4.SVGParser.LineContext;
 import main.antlr4.SVGParser.LinearGradientContext;
 import main.antlr4.SVGParser.PathContext;
+import main.antlr4.SVGParser.Path_element_closeContext;
 import main.antlr4.SVGParser.Path_element_cubiccurve_relContext;
+import main.antlr4.SVGParser.Path_element_lineto_relContext;
 import main.antlr4.SVGParser.Path_element_movetoContext;
 import main.antlr4.SVGParser.Path_element_moveto_relContext;
 import main.antlr4.SVGParser.PolygonContext;
@@ -29,7 +33,7 @@ import main.antlr4.SVGParserBaseListener;
 public class SVGParseListener extends SVGParserBaseListener {
 
 	private TikzBuilder tikzBuilder;
-	private int pathCount = 0;
+	private SVGPathContext currentPath;
 
 	public SVGParseListener(TikzBuilder tikzBuilder) {
 		this.tikzBuilder = tikzBuilder;
@@ -37,7 +41,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		System.out.println("SAW " + pathCount + " Paths. =)");
+
 	}
 
 	@Override
@@ -219,66 +223,128 @@ public class SVGParseListener extends SVGParserBaseListener {
 	public void exitPolyline(PolylineContext ctx) {
 		// TODO Auto-generated method stub
 		super.exitPolyline(ctx);
-		
+
 		List<AttributeContext> list = ctx.attribute();
-		
-		for(AttributeContext a : list) {
-			
-			String points="0,0 ";
-			
-			if(a.NAME().toString()=="points"){
-				points=a.STRING().toString();
+
+		for (AttributeContext a : list) {
+
+			String points = "0,0 ";
+
+			if (a.NAME().toString() == "points") {
+				points = a.STRING().toString();
 			}
-			
+
 			String[] point = points.split(" ");
-			
-			String coordinates="";
-			
-			for(String coordinate : point) {
-				coordinates=coordinates+" ("+coordinate+")";
+
+			String coordinates = "";
+
+			for (String coordinate : point) {
+				coordinates = coordinates + " (" + coordinate + ")";
 			}
-			
-			
-			String path="\\draw plot[smooth, tension=2] coordinates { "+coordinates+"};";
-			
+
+			String path = "\\draw plot[smooth, tension=2] coordinates { " + coordinates + "};";
+
 			tikzBuilder.appendString(path);
 		}
 	}
 
 	@Override
-	public void exitPath(PathContext ctx) {
-		/*
-		 * gute quelle:
-		 * https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
-		 * 
-		 */
-	
-		List<AttributeContext> list = ctx.attribute();
-		for (AttributeContext a : list) {
-			switch(a.NAME().toString()) {
-			
-			case "transform": 
-				//TODO: handle transform!
-				break;
-			}
-		}
-		
-		pathCount++;
-
+	public void enterPath(PathContext ctx) {
+		// create new SVGPathContext!
+		currentPath = new SVGPathContext();
 	}
 
-	
+	@Override
+	public void exitPath(PathContext ctx) {
+		/*
+		 * gute quelle: https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
+		 * 
+		 */
+
+		// Add style-info to current PathContext
+		List<AttributeContext> list = ctx.attribute();
+		for (AttributeContext a : list) {
+			switch (a.NAME().toString()) {
+
+			case "transform":
+				// handle transformation:
+				currentPath.setTransformation(a.STRING().toString());
+				break;
+			case "fill":
+				// handle fill color:
+				currentPath.setFillColor(a.STRING().toString());
+				break;
+			case "stroke":
+				// handle line color:
+				currentPath.setStrokeColor(a.STRING().toString());
+				break;
+			case "stroke-width":
+				// handle line-width
+				currentPath.setStrokeWidth(a.STRING().toString());
+				break;
+
+			}
+		}
+	}
 
 	@Override
 	public void exitPath_element_moveto(Path_element_movetoContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitPath_element_moveto(ctx);
+		List<TerminalNode> attributes = ctx.NUMBER();
+		currentPath.setCurrentX(attributes.get(0).toString());
+		currentPath.setCurrentY(attributes.get(1).toString());
+	}
+
+	@Override
+	public void enterPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
+
+		List<TerminalNode> attributes = ctx.NUMBER();
+
+		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
+		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
+
+		currentPath.setCurrentX(String.valueOf(abs_x));
+		currentPath.setCurrentY(String.valueOf(abs_y));
 	}
 
 	@Override
 	public void exitPath_element_cubiccurve_rel(Path_element_cubiccurve_relContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitPath_element_cubiccurve_rel(ctx);
+
+		List<TerminalNode> attributes = ctx.NUMBER();
+
+		double abs_x1 = Double.parseDouble(currentPath.getCurrentX())
+				+ Double.parseDouble(attributes.get(0).toString());
+		double abs_y1 = Double.parseDouble(currentPath.getCurrentY())
+				+ Double.parseDouble(attributes.get(1).toString());
+		double abs_x2 = Double.parseDouble(currentPath.getCurrentX())
+				+ Double.parseDouble(attributes.get(2).toString());
+		double abs_y2 = Double.parseDouble(currentPath.getCurrentY())
+				+ Double.parseDouble(attributes.get(3).toString());
+		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(4).toString());
+		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(5).toString());
+
+		String tikzDraw = "\\draw (" + abs_x1 + "," + abs_y1 + ") .. controls (" + abs_x2 + "," + abs_y2 + " .. ("
+				+ abs_x + "," + abs_y + ")";
+		currentPath.addComponent(tikzDraw);
+	}
+
+	@Override
+	public void exitPath_element_lineto_rel(Path_element_lineto_relContext ctx) {
+
+		List<TerminalNode> attributes = ctx.NUMBER();
+
+		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
+		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
+
+		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- (" + abs_x
+				+ "," + abs_y + ")";
+		currentPath.addComponent(tikzDraw);
+	}
+
+	@Override
+	public void exitPath_element_close(Path_element_closeContext ctx) {
+		// draw straight line back to start-coord:
+		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- ("
+				+ currentPath.getStartX() + "," + currentPath.getStartY() + ")";
 	}
 
 	@Override
@@ -286,8 +352,6 @@ public class SVGParseListener extends SVGParserBaseListener {
 		// TODO Auto-generated method stub
 		super.exitText(ctx);
 	}
-
-
 
 	@Override
 	public void exitUnnamedElement(UnnamedElementContext ctx) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import org.antlr.v4.runtime.CharStream;
@@ -24,6 +25,7 @@ public class SVGParserBuilder {
 	
 	public SVGParserBuilder(File sourceFile) {
 		tikzOutput = new ByteArrayOutputStream();
+		new PrintStream(tikzOutput).println("% generated TikZ/PGF image:"); //leadin / watermark
 		
 		try {
 			//FileinputStream -> CharStream
@@ -60,8 +62,14 @@ public class SVGParserBuilder {
 	}
 	
 	public void generateLatex(File targetDirectory,String filename) {
+		System.out.println("reached1");
 		LatexBuilder lb = new LatexBuilder();
-		lb.processTikZStringBuilder(tikzOutput.toString(Charset.forName("UFT-8")));
+		
+		
+		
+		String tikzCode = tikzOutput.toString(Charset.defaultCharset());
+		System.out.println("reached2");
+		lb.processTikZStringBuilder(tikzCode);
 		lb.writeToFile(targetDirectory, filename);
 	}
 

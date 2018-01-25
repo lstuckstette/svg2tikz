@@ -90,12 +90,15 @@ PATH_A				: 'A';
 
 WS_PATH  :   [ \t\n\r]+ -> skip ;
 
-NUMBER  : INT
-	    | FLOAT
-	    ;
-INT		: [0-9]+ 
-		| '-'[0-9]*
-		;
-FLOAT	: INT+ '.' INT+
-		| INT+ 'e' INT+;
+UNARY_OPERATOR	: '-'
+				| '+'
+				;
+UNSIGNED_INT : ('0' | '1'..'9' '0'..'9'*);
+
+UNSIGNED_FLOAT	:   ('0'..'9')+ '.' ('0'..'9')* Exponent?
+				|   '.' ('0'..'9')+ Exponent?
+				|   ('0'..'9')+ Exponent
+				;
+fragment
+Exponent 		: ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
 

@@ -232,6 +232,26 @@ public interface SVGParserListener extends ParseTreeListener {
 	 */
 	void exitPath_elements(SVGParser.Path_elementsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SVGParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(SVGParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(SVGParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SVGParser#unsigned_number}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnsigned_number(SVGParser.Unsigned_numberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SVGParser#unsigned_number}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnsigned_number(SVGParser.Unsigned_numberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SVGParser#path_element_moveto_rel}.
 	 * @param ctx the parse tree
 	 */

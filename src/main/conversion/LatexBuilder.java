@@ -28,6 +28,7 @@ public class LatexBuilder {
 		/*
 		 * TODO: embedd TikZ into latex document
 		 */
+		
 		content.append(input);
 
 		
@@ -40,7 +41,9 @@ public class LatexBuilder {
 	}
 
 	public void writeToFile(File targetDirectory,String filename) {
+		
 		finishLatex();
+		System.out.println("target file: "+targetDirectory.getAbsolutePath()+"\\"+filename);
 		File outputFile = new File(targetDirectory.getAbsolutePath()+"\\"+filename);
 		
 		

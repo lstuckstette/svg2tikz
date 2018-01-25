@@ -19,7 +19,7 @@ element	: '<' 'circle' attribute+ '/>'													# Circle
 		| '<' 'polygon' attribute+ '/>'													# Polygon
 		| '<' 'polyline' attribute+ '/>'												# Polyline
 		| '<' 'path' attribute+ '/>'													# Path
-		| '<' 'text' attribute+ '/>'													# Text
+		| '<' 'text' attribute+ '>'	TEXT '<' SLASH 'text' SLASH '>'						# Text
 		| '<' 'g' attribute* '>' element+ '<' SLASH 'g' '>'								# G
 		| '<' 'filter' attribute+ '/>'													# Filter							
 		| '<' 'stop' attribute+ '/>'													# Stop

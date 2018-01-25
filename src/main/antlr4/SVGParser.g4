@@ -35,8 +35,8 @@ attribute		: NAME '=' STRING
 
 
 
-path_elements	: path_element_moveto
-				| path_element_moveto_rel
+path_elements	: path_element_moveto_rel
+				| path_element_moveto
 				| path_element_lineto_rel
 				| path_element_lineto
 				| path_element_horizontalline_rel

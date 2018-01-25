@@ -44,6 +44,29 @@ public class SVGParseListener extends SVGParserBaseListener {
 		tGraphics = new TikzGraphics2D(tikzOutput);
 	}
 
+	static double getNumber(NumberContext ctx) {
+
+		boolean signed = ctx.UNARY_OPERATOR() != null ? true : false;
+
+		String unsignedBody = "";
+		if (ctx.unsigned_number().UNSIGNED_FLOAT() != null) {
+			unsignedBody = ctx.unsigned_number().UNSIGNED_FLOAT().toString();
+		} else if (ctx.unsigned_number().UNSIGNED_INT() != null) {
+			unsignedBody = ctx.unsigned_number().UNSIGNED_INT().toString();
+		} else {
+			unsignedBody = "0";
+			System.out.println("FATAL NUMBER ERROR!!!!!!!");
+		}
+
+		double ret = Double.parseDouble(unsignedBody);
+
+		if (signed) {
+			ret = 0 - ret;
+		}
+
+		return ret;
+	}
+
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
 
@@ -423,25 +446,26 @@ public class SVGParseListener extends SVGParserBaseListener {
 	public void exitPath_element_moveto(Path_element_movetoContext ctx) {
 		List<NumberContext> attributes = ctx.number();
 		for (NumberContext n : attributes) {
-			System.out.print(n.unsigned_number().UNSIGNED_FLOAT().toString() + " signed? ");
-			System.out.println(n.UNARY_OPERATOR() != null);
-			// System.out.println(n.UNARY_OPERATOR().toString());
+			// System.out.println(n.toStringTree());
+			System.out.println(SVGParseListener.getNumber(n));
+
 			// System.out.println(n.toString());
 		}
-		System.out.println("ABS-------------------");
+		System.out.println("ABS-------------------" + attributes.size());
 
 		// currentPath.setCurrentX(attributes.get(0).toString());
 		// currentPath.setCurrentY(attributes.get(1).toString());
 	}
 
 	@Override
-	public void enterPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
+	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
 
 		List<NumberContext> attributes = ctx.number();
 		for (NumberContext n : attributes) {
-			System.out.println(n.toString());
+			System.out.println(n.toStringTree());
+			System.out.println(SVGParseListener.getNumber(n));
 		}
-		System.out.println("REL-------------------");
+		System.out.println("REL-------------------" + attributes.size());
 		// List<TerminalNode> attributes = ctx.NUMBER();
 		//
 		// double abs_x = Double.parseDouble(currentPath.getCurrentX()) +

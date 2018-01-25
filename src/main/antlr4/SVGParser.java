@@ -1182,11 +1182,11 @@ public class SVGParser extends Parser {
 	}
 
 	public static class Path_elementsContext extends ParserRuleContext {
-		public Path_element_movetoContext path_element_moveto() {
-			return getRuleContext(Path_element_movetoContext.class,0);
-		}
 		public Path_element_moveto_relContext path_element_moveto_rel() {
 			return getRuleContext(Path_element_moveto_relContext.class,0);
+		}
+		public Path_element_movetoContext path_element_moveto() {
+			return getRuleContext(Path_element_movetoContext.class,0);
 		}
 		public Path_element_lineto_relContext path_element_lineto_rel() {
 			return getRuleContext(Path_element_lineto_relContext.class,0);
@@ -1264,14 +1264,14 @@ public class SVGParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(273);
-				path_element_moveto();
+				path_element_moveto_rel();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(274);
-				path_element_moveto_rel();
+				path_element_moveto();
 				}
 				break;
 			case 3:
@@ -3748,7 +3748,7 @@ public class SVGParser extends Parser {
 		"\u010c\5\b\5\2\u010b\u010a\3\2\2\2\u010c\u010d\3\2\2\2\u010d\u010b\3\2"+
 		"\2\2\u010d\u010e\3\2\2\2\u010e\u010f\3\2\2\2\u010f\u0110\7!\2\2\u0110"+
 		"\u0112\3\2\2\2\u0111\u0106\3\2\2\2\u0111\u0109\3\2\2\2\u0112\7\3\2\2\2"+
-		"\u0113\u0127\5\20\t\2\u0114\u0127\5\16\b\2\u0115\u0127\5\22\n\2\u0116"+
+		"\u0113\u0127\5\16\b\2\u0114\u0127\5\20\t\2\u0115\u0127\5\22\n\2\u0116"+
 		"\u0127\5\24\13\2\u0117\u0127\5\26\f\2\u0118\u0127\5\30\r\2\u0119\u0127"+
 		"\5\32\16\2\u011a\u0127\5\34\17\2\u011b\u0127\5\36\20\2\u011c\u0127\5 "+
 		"\21\2\u011d\u0127\5\"\22\2\u011e\u0127\5$\23\2\u011f\u0127\5&\24\2\u0120"+

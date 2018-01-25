@@ -62,13 +62,8 @@ public class SVGParserBuilder {
 	}
 	
 	public void generateLatex(File targetDirectory,String filename) {
-		System.out.println("reached1");
 		LatexBuilder lb = new LatexBuilder();
-		
-		
-		
 		String tikzCode = tikzOutput.toString(Charset.defaultCharset());
-		System.out.println("reached2");
 		lb.processTikZStringBuilder(tikzCode);
 		lb.writeToFile(targetDirectory, filename);
 	}

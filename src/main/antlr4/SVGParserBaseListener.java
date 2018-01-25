@@ -222,18 +222,6 @@ public class SVGParserBaseListener implements SVGParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPath_attribute(SVGParser.Path_attributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPath_attribute(SVGParser.Path_attributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAttribute(SVGParser.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -380,7 +380,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void enterPath(PathContext ctx) {
 		// create new SVGPathContext!
-		currentPath = new SVGPathContext();
+//		currentPath = new SVGPathContext();
 	}
 
 	@Override
@@ -391,89 +391,89 @@ public class SVGParseListener extends SVGParserBaseListener {
 		 */
 
 		// Add style-info to current PathContext
-		List<AttributeContext> list = ctx.attribute();
-		for (AttributeContext a : list) {
-			switch (a.NAME().toString()) {
-
-			case "transform":
-				// handle transformation:
-				currentPath.setTransformation(a.STRING().toString());
-				break;
-			case "fill":
-				// handle fill color:
-				currentPath.setFillColor(a.STRING().toString());
-				break;
-			case "stroke":
-				// handle line color:
-				currentPath.setStrokeColor(a.STRING().toString());
-				break;
-			case "stroke-width":
-				// handle line-width
-				currentPath.setStrokeWidth(a.STRING().toString());
-				break;
-
-			}
-		}
+//		List<AttributeContext> list = ctx.attribute();
+//		for (AttributeContext a : list) {
+//			switch (a.NAME().toString()) {
+//
+//			case "transform":
+//				// handle transformation:
+//				currentPath.setTransformation(a.STRING().toString());
+//				break;
+//			case "fill":
+//				// handle fill color:
+//				currentPath.setFillColor(a.STRING().toString());
+//				break;
+//			case "stroke":
+//				// handle line color:
+//				currentPath.setStrokeColor(a.STRING().toString());
+//				break;
+//			case "stroke-width":
+//				// handle line-width
+//				currentPath.setStrokeWidth(a.STRING().toString());
+//				break;
+//
+//			}
+//		}
 	}
 
 	@Override
 	public void exitPath_element_moveto(Path_element_movetoContext ctx) {
-		List<TerminalNode> attributes = ctx.NUMBER();
-		currentPath.setCurrentX(attributes.get(0).toString());
-		currentPath.setCurrentY(attributes.get(1).toString());
+//		List<TerminalNode> attributes = ctx.NUMBER();
+//		currentPath.setCurrentX(attributes.get(0).toString());
+//		currentPath.setCurrentY(attributes.get(1).toString());
 	}
 
 	@Override
 	public void enterPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
 
-		List<TerminalNode> attributes = ctx.NUMBER();
-
-		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
-		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
-
-		currentPath.setCurrentX(String.valueOf(abs_x));
-		currentPath.setCurrentY(String.valueOf(abs_y));
+//		List<TerminalNode> attributes = ctx.NUMBER();
+//
+//		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
+//		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
+//
+//		currentPath.setCurrentX(String.valueOf(abs_x));
+//		currentPath.setCurrentY(String.valueOf(abs_y));
 	}
 
 	@Override
 	public void exitPath_element_cubiccurve_rel(Path_element_cubiccurve_relContext ctx) {
 
-		List<TerminalNode> attributes = ctx.NUMBER();
-
-		double abs_x1 = Double.parseDouble(currentPath.getCurrentX())
-				+ Double.parseDouble(attributes.get(0).toString());
-		double abs_y1 = Double.parseDouble(currentPath.getCurrentY())
-				+ Double.parseDouble(attributes.get(1).toString());
-		double abs_x2 = Double.parseDouble(currentPath.getCurrentX())
-				+ Double.parseDouble(attributes.get(2).toString());
-		double abs_y2 = Double.parseDouble(currentPath.getCurrentY())
-				+ Double.parseDouble(attributes.get(3).toString());
-		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(4).toString());
-		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(5).toString());
-
-		String tikzDraw = "\\draw (" + abs_x1 + "," + abs_y1 + ") .. controls (" + abs_x2 + "," + abs_y2 + ") .. ("
-				+ abs_x + "," + abs_y + ")";
-		currentPath.addComponent(tikzDraw);
+//		List<TerminalNode> attributes = ctx.NUMBER();
+//
+//		double abs_x1 = Double.parseDouble(currentPath.getCurrentX())
+//				+ Double.parseDouble(attributes.get(0).toString());
+//		double abs_y1 = Double.parseDouble(currentPath.getCurrentY())
+//				+ Double.parseDouble(attributes.get(1).toString());
+//		double abs_x2 = Double.parseDouble(currentPath.getCurrentX())
+//				+ Double.parseDouble(attributes.get(2).toString());
+//		double abs_y2 = Double.parseDouble(currentPath.getCurrentY())
+//				+ Double.parseDouble(attributes.get(3).toString());
+//		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(4).toString());
+//		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(5).toString());
+//
+//		String tikzDraw = "\\draw (" + abs_x1 + "," + abs_y1 + ") .. controls (" + abs_x2 + "," + abs_y2 + ") .. ("
+//				+ abs_x + "," + abs_y + ")";
+//		currentPath.addComponent(tikzDraw);
 	}
 
 	@Override
 	public void exitPath_element_lineto_rel(Path_element_lineto_relContext ctx) {
 
-		List<TerminalNode> attributes = ctx.NUMBER();
-
-		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
-		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
-
-		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- (" + abs_x
-				+ "," + abs_y + ")";
-		currentPath.addComponent(tikzDraw);
+//		List<TerminalNode> attributes = ctx.NUMBER();
+//
+//		double abs_x = Double.parseDouble(currentPath.getCurrentX()) + Double.parseDouble(attributes.get(0).toString());
+//		double abs_y = Double.parseDouble(currentPath.getCurrentY()) + Double.parseDouble(attributes.get(1).toString());
+//
+//		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- (" + abs_x
+//				+ "," + abs_y + ")";
+//		currentPath.addComponent(tikzDraw);
 	}
 
 	@Override
 	public void exitPath_element_close(Path_element_closeContext ctx) {
-		// draw straight line back to start-coord:
-		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- ("
-				+ currentPath.getStartX() + "," + currentPath.getStartY() + ")";
+//		// draw straight line back to start-coord:
+//		String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," + currentPath.getCurrentY() + ") -- ("
+//				+ currentPath.getStartX() + "," + currentPath.getStartY() + ")";
 	}
 
 	@Override

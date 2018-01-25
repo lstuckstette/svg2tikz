@@ -65,7 +65,8 @@ COMMENT_INSIDE 	: '<!--' .*? '-->'  -> skip ;
 mode PATHATTRIBUTE;
 
 ATTRIBUTECLOSE		: '"' -> popMode ;
-BLANK				: [ ,];
+BLANK				: ' '
+					| ',' ;
 PATH_M_REL			: 'm';
 PATH_M				: 'M';
 PATH_L_REL			: 'l';
@@ -87,10 +88,14 @@ PATH_T				: 'T';
 PATH_A_REL			: 'a';
 PATH_A				: 'A';
 
-NUMBER : INT
-	   | FLOAT
-	   ;
-fragment INT	: [0-9]+ ;
-fragment FLOAT	: INT+ '.' INT+
-				| INT+ 'e' INT+;
+WS_PATH  :   [ \t\n\r]+ -> skip ;
+
+NUMBER  : INT
+	    | FLOAT
+	    ;
+INT		: [0-9]+ 
+		| '-'[0-9]*
+		;
+FLOAT	: INT+ '.' INT+
+		| INT+ 'e' INT+;
 

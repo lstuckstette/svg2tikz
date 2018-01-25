@@ -212,16 +212,6 @@ public interface SVGParserListener extends ParseTreeListener {
 	 */
 	void exitUnnamedElement_SelfClose(SVGParser.UnnamedElement_SelfCloseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SVGParser#path_attribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterPath_attribute(SVGParser.Path_attributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SVGParser#path_attribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitPath_attribute(SVGParser.Path_attributeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SVGParser#attribute}.
 	 * @param ctx the parse tree
 	 */

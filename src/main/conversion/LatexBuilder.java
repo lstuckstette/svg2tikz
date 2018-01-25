@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharSet;
 
 public class LatexBuilder {
 
@@ -13,7 +12,6 @@ public class LatexBuilder {
 
 	public LatexBuilder() {
 		content = new StringBuilder();
-		System.out.println("LatexBuilder HW!");
 		initLateX();
 	}
 

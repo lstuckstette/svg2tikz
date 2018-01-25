@@ -20,6 +20,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker.StateValue;
 
+import main.conversion.SVGParserBuilder;
+
 public class Application extends JFrame {
 
 	/**  */
@@ -175,38 +177,49 @@ public class Application extends JFrame {
 	}
 
 	private void search() {
+		
 		final File sourceFile = new File(sourceFilePathTextField.getText());
 		final File targetDirectory = new File(targetPathTextField.getText());
-		messagesTextArea.setText(
-				"Converting File '" + sourceFile.getName() + "' to TikZ and putting the result in path '" + targetDirectory.getAbsolutePath() + "'\n");
-		conversionWorker = new ConversionWorker(sourceFile, targetDirectory, messagesTextArea);
-		conversionWorker.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent event) {
-				switch (event.getPropertyName()) {
-				case "progress":
-					conversionProgressBar.setIndeterminate(false);
-					conversionProgressBar.setValue((Integer) event.getNewValue());
-					break;
-				case "state":
-					switch ((StateValue) event.getNewValue()) {
-					case DONE:
-						conversionProgressBar.setVisible(false);
-						conversionCancelAction.putValue(Action.NAME, "Convert");
-						conversionWorker = null;
-						break;
-					case STARTED:
-					case PENDING:
-						conversionCancelAction.putValue(Action.NAME, "Cancel");
-						conversionProgressBar.setVisible(true);
-						conversionProgressBar.setIndeterminate(true);
-						break;
-					}
-					break;
-				}
-			}
-		});
-		conversionWorker.execute();
+		
+		
+		SVGParserBuilder parserBuilder = new SVGParserBuilder(sourceFile);
+		parserBuilder.parseFile();
+		String targetFileName = sourceFile.getName();
+		targetFileName = targetFileName.replaceAll(".svg", ".tex");
+		parserBuilder.generateLatex(targetDirectory,targetFileName);
+		
+//		final File sourceFile = new File(sourceFilePathTextField.getText());
+//		final File targetDirectory = new File(targetPathTextField.getText());
+//		messagesTextArea.setText(
+//				"Converting File '" + sourceFile.getName() + "' to TikZ and putting the result in path '" + targetDirectory.getAbsolutePath() + "'\n");
+//		conversionWorker = new ConversionWorker(sourceFile, targetDirectory, messagesTextArea);
+//		conversionWorker.addPropertyChangeListener(new PropertyChangeListener() {
+//			@Override
+//			public void propertyChange(final PropertyChangeEvent event) {
+//				switch (event.getPropertyName()) {
+//				case "progress":
+//					conversionProgressBar.setIndeterminate(false);
+//					conversionProgressBar.setValue((Integer) event.getNewValue());
+//					break;
+//				case "state":
+//					switch ((StateValue) event.getNewValue()) {
+//					case DONE:
+//						conversionProgressBar.setVisible(false);
+//						conversionCancelAction.putValue(Action.NAME, "Convert");
+//						conversionWorker = null;
+//						break;
+//					case STARTED:
+//					case PENDING:
+//						conversionCancelAction.putValue(Action.NAME, "Cancel");
+//						conversionProgressBar.setVisible(true);
+//						conversionProgressBar.setIndeterminate(true);
+//						break;
+//					}
+//					break;
+//				}
+//			}
+//		});
+//		conversionWorker.execute();
 	}
 
 	private void cancel() {

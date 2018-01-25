@@ -10,10 +10,7 @@ public class SVGPathContext {
 	private String strokeWidth;
 	private String styleContainer;
 	private String transformation;
-	private String currentX = "0";
-	private String currentY = "0";
-	private String startX = "0";
-	private String startY = "0";
+
 
 	private ArrayList<String> drawComponents;
 
@@ -24,14 +21,14 @@ public class SVGPathContext {
 
 	public String getTikZString() {
 		StringBuilder builder = new StringBuilder();
-		ArrayList<String> settings = new ArrayList<>();
+		
 		// Setup path enviroment:
 		if (fillColor != null) {
 			if (!fillColor.equals("none")) {
 				Color fillC = Color.decode(fillColor);
 				builder.append("\\definecolor{fillColor}{RGB}{" + fillC.getRed() + "," + fillC.getGreen() + ","
 						+ fillC.getBlue() + "}");
-				settings.add("fill=fillColor");
+				//settings.add("fill=fillColor");
 			}
 		}
 		if (strokeColor != null) {
@@ -39,57 +36,28 @@ public class SVGPathContext {
 				Color strokeC = Color.decode(strokeColor); // convert hex rgb to decimal rgb
 				builder.append("\\definecolor{strokeColor}{RGB}{" + strokeC.getRed() + "," + strokeC.getGreen() + ","
 						+ strokeC.getBlue() + "}");
-				settings.add("draw=strokeColor");
+				//settings.add("draw=strokeColor");
 			}
 		}
 		if (strokeWidth != null) {
 			if (!strokeWidth.equals("none")) {
 
-				settings.add("line width=" + strokeWidth);
+				//settings.add("line width=" + strokeWidth);
 			}
 		}
 
 		String settingsJoined = "";
-		for (String s : settings) {
-			settingsJoined += s + ",";			// join settings
-		}
+//		for (String s : settings) {
+//			settingsJoined += s + ",";			// join settings
+//		}
 		settingsJoined = settingsJoined.substring(0, settingsJoined.length()-1); //crop last ','
 
 		builder.append("\\path []");
 		return null;
 	}
 
-	public String getCurrentX() {
-		return currentX;
-	}
 
-	public void setCurrentX(String currentX) {
-		this.currentX = currentX;
-	}
 
-	public String getCurrentY() {
-		return currentY;
-	}
-
-	public String getStartX() {
-		return startX;
-	}
-
-	public void setStartX(String startX) {
-		this.startX = startX;
-	}
-
-	public String getStartY() {
-		return startY;
-	}
-
-	public void setStartY(String startY) {
-		this.startY = startY;
-	}
-
-	public void setCurrentY(String currentY) {
-		this.currentY = currentY;
-	}
 
 	public void addComponent(String input) {
 		drawComponents.add(input);

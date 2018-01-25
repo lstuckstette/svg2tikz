@@ -1,9 +1,18 @@
 package main.conversion;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -18,7 +27,10 @@ import main.antlr4.SVGParser.LineContext;
 import main.antlr4.SVGParser.LinearGradientContext;
 import main.antlr4.SVGParser.NumberContext;
 import main.antlr4.SVGParser.PathContext;
+import main.antlr4.SVGParser.Path_element_arcContext;
+import main.antlr4.SVGParser.Path_element_arc_relContext;
 import main.antlr4.SVGParser.Path_element_closeContext;
+import main.antlr4.SVGParser.Path_element_cubiccurveContext;
 import main.antlr4.SVGParser.Path_element_cubiccurve_relContext;
 import main.antlr4.SVGParser.Path_element_lineto_relContext;
 import main.antlr4.SVGParser.Path_element_movetoContext;
@@ -37,11 +49,19 @@ import main.jtikz.TikzGraphics2D;
 
 public class SVGParseListener extends SVGParserBaseListener {
 
-	private SVGPathContext currentPath;
-	private TikzGraphics2D tGraphics;
+	private Path2D currentPath;
+	// private TikzGraphics2D g2d;
+	private Graphics2D g2d;
+	BufferedImage output;
 
 	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
-		tGraphics = new TikzGraphics2D(tikzOutput);
+		g2d = new TikzGraphics2D(tikzOutput);
+		currentPath = new Path2D.Double();
+
+		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+		g2d = output.createGraphics();
+		JOptionPane.showMessageDialog(null, new ImageIcon(output));
+
 	}
 
 	static double getNumber(NumberContext ctx) {
@@ -69,8 +89,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-
-		//
+		JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
 
 	@Override
@@ -405,8 +424,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void enterPath(PathContext ctx) {
-		// create new SVGPathContext!
-		// currentPath = new SVGPathContext();
+		System.out.println("reached!?");
+		currentPath = new Path2D.Double();
 	}
 
 	@Override
@@ -440,89 +459,155 @@ public class SVGParseListener extends SVGParserBaseListener {
 		//
 		// }
 		// }
+
+		g2d.draw(currentPath);
+		// create new
+		currentPath = new Path2D.Double();
+
 	}
 
 	@Override
 	public void exitPath_element_moveto(Path_element_movetoContext ctx) {
+
 		List<NumberContext> attributes = ctx.number();
-		for (NumberContext n : attributes) {
-			// System.out.println(n.toStringTree());
-			System.out.println(SVGParseListener.getNumber(n));
-
-			// System.out.println(n.toString());
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on Path-MoveTo! to few inputs.");
+			return;
 		}
-		System.out.println("ABS-------------------" + attributes.size());
-
-		// currentPath.setCurrentX(attributes.get(0).toString());
-		// currentPath.setCurrentY(attributes.get(1).toString());
+		// move current Path:
+		double x = SVGParseListener.getNumber(attributes.get(0));
+		double y = SVGParseListener.getNumber(attributes.get(1));
+		currentPath.moveTo(x, y);
 	}
 
 	@Override
 	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
-
+		// JUST ASSUME RELATVE POSITION WAS 0,0!!!! not nice!
 		List<NumberContext> attributes = ctx.number();
-		for (NumberContext n : attributes) {
-			System.out.println(n.toStringTree());
-			System.out.println(SVGParseListener.getNumber(n));
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on Path-MoveTo! Too few inputs.");
+			return;
 		}
-		System.out.println("REL-------------------" + attributes.size());
-		// List<TerminalNode> attributes = ctx.NUMBER();
-		//
-		// double abs_x = Double.parseDouble(currentPath.getCurrentX()) +
-		// Double.parseDouble(attributes.get(0).toString());
-		// double abs_y = Double.parseDouble(currentPath.getCurrentY()) +
-		// Double.parseDouble(attributes.get(1).toString());
-		//
-		// currentPath.setCurrentX(String.valueOf(abs_x));
-		// currentPath.setCurrentY(String.valueOf(abs_y));
+		// move current Path:
+		double x = SVGParseListener.getNumber(attributes.get(0));
+		double y = SVGParseListener.getNumber(attributes.get(1));
+		currentPath.moveTo(x, y);
 	}
 
 	@Override
 	public void exitPath_element_cubiccurve_rel(Path_element_cubiccurve_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
 
-		// List<TerminalNode> attributes = ctx.NUMBER();
-		//
-		// double abs_x1 = Double.parseDouble(currentPath.getCurrentX())
-		// + Double.parseDouble(attributes.get(0).toString());
-		// double abs_y1 = Double.parseDouble(currentPath.getCurrentY())
-		// + Double.parseDouble(attributes.get(1).toString());
-		// double abs_x2 = Double.parseDouble(currentPath.getCurrentX())
-		// + Double.parseDouble(attributes.get(2).toString());
-		// double abs_y2 = Double.parseDouble(currentPath.getCurrentY())
-		// + Double.parseDouble(attributes.get(3).toString());
-		// double abs_x = Double.parseDouble(currentPath.getCurrentX()) +
-		// Double.parseDouble(attributes.get(4).toString());
-		// double abs_y = Double.parseDouble(currentPath.getCurrentY()) +
-		// Double.parseDouble(attributes.get(5).toString());
-		//
-		// String tikzDraw = "\\draw (" + abs_x1 + "," + abs_y1 + ") .. controls (" +
-		// abs_x2 + "," + abs_y2 + ") .. ("
-		// + abs_x + "," + abs_y + ")";
-		// currentPath.addComponent(tikzDraw);
+		// System.out.println("CC: " + currentPath.getCurrentPoint().getX() + "|" +
+		// currentPath.getCurrentPoint().getY());
+
+		// check input parameters:
+		if (attributes.size() < 6) {
+			System.out.println("Error on cubic-curve-rel! Too few inputs.");
+			return;
+		}
+		// assign parsed numbers:
+		double x1_rel = SVGParseListener.getNumber(attributes.get(0));
+		double y1_rel = SVGParseListener.getNumber(attributes.get(1));
+		double x2_rel = SVGParseListener.getNumber(attributes.get(2));
+		double y2_rel = SVGParseListener.getNumber(attributes.get(3));
+		double x_rel = SVGParseListener.getNumber(attributes.get(4));
+		double y_rel = SVGParseListener.getNumber(attributes.get(5));
+
+		// convert relative to absolute coords:
+
+		double x1 = currentPath.getCurrentPoint().getX() + x1_rel;
+		double y1 = currentPath.getCurrentPoint().getX() + y1_rel;
+		double x2 = currentPath.getCurrentPoint().getX() + x2_rel;
+		double y2 = currentPath.getCurrentPoint().getX() + y2_rel;
+		double x = currentPath.getCurrentPoint().getX() + x_rel;
+		double y = currentPath.getCurrentPoint().getX() + y_rel;
+
+		currentPath.curveTo(x1, y1, x2, y2, x, y);
+		currentPath.moveTo(x, y);
+
+	}
+
+	@Override
+	public void exitPath_element_cubiccurve(Path_element_cubiccurveContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 6) {
+			System.out.println("Error on cubic-curve! Too few inputs.");
+			return;
+		}
+		// assign parsed numbers:
+		double x1 = SVGParseListener.getNumber(attributes.get(0));
+		double y1 = SVGParseListener.getNumber(attributes.get(1));
+		double x2 = SVGParseListener.getNumber(attributes.get(2));
+		double y2 = SVGParseListener.getNumber(attributes.get(3));
+		double x = SVGParseListener.getNumber(attributes.get(4));
+		double y = SVGParseListener.getNumber(attributes.get(5));
+
+		currentPath.curveTo(x1, y1, x2, y2, x, y);
+	}
+
+	@Override
+	public void exitPath_element_arc_rel(Path_element_arc_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+		
+		// check input parameters:
+		if (attributes.size() < 7) {
+			System.out.println("Error on arc-rel! Too few inputs.");
+			return;
+		}
+
+		double xradius = SVGParseListener.getNumber(attributes.get(0));
+		double yradius = SVGParseListener.getNumber(attributes.get(1));
+		double rotation = SVGParseListener.getNumber(attributes.get(2));
+		double largearc = SVGParseListener.getNumber(attributes.get(3));
+		double sweep = SVGParseListener.getNumber(attributes.get(4));
+		double xendstroke = SVGParseListener.getNumber(attributes.get(5));
+		double yendstroke = SVGParseListener.getNumber(attributes.get(6));
+
+		Arc2D arc = new Arc2D.Double(currentPath.getCurrentPoint().getX(), currentPath.getCurrentPoint().getY(), 50, 50,
+				40, 40, Arc2D.OPEN);
+		
+		
+	}
+
+	@Override
+	public void exitPath_element_arc(Path_element_arcContext ctx) {
+		// TODO Auto-generated method stub
+		super.exitPath_element_arc(ctx);
 	}
 
 	@Override
 	public void exitPath_element_lineto_rel(Path_element_lineto_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
 
-		// List<TerminalNode> attributes = ctx.NUMBER();
-		//
-		// double abs_x = Double.parseDouble(currentPath.getCurrentX()) +
-		// Double.parseDouble(attributes.get(0).toString());
-		// double abs_y = Double.parseDouble(currentPath.getCurrentY()) +
-		// Double.parseDouble(attributes.get(1).toString());
-		//
-		// String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," +
-		// currentPath.getCurrentY() + ") -- (" + abs_x
-		// + "," + abs_y + ")";
-		// currentPath.addComponent(tikzDraw);
+		System.out.println("lineto!");
+
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on lineto-rel! Too few inputs.");
+			return;
+		}
+		// assign parsed numbers:
+		double x = SVGParseListener.getNumber(attributes.get(0));
+		double y = SVGParseListener.getNumber(attributes.get(1));
+
+		currentPath.lineTo(x, y);
+		currentPath.moveTo(x, y);
+
 	}
 
 	@Override
 	public void exitPath_element_close(Path_element_closeContext ctx) {
-		// // draw straight line back to start-coord:
-		// String tikzDraw = "\\draw (" + currentPath.getCurrentX() + "," +
-		// currentPath.getCurrentY() + ") -- ("
-		// + currentPath.getStartX() + "," + currentPath.getStartY() + ")";
+		// simply close path:
+		currentPath.closePath();
 	}
 
 	@Override

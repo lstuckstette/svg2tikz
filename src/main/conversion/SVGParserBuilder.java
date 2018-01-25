@@ -59,6 +59,8 @@ public class SVGParserBuilder {
 		//SvgRootContext svgCtx = svgParser.svgRoot();
 		svgParser.svgRoot();
 		
+		
+		
 	}
 	
 	public void generateLatex(File targetDirectory,String filename) {

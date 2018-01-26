@@ -2,17 +2,14 @@ package main.conversion;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -57,20 +54,20 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	private int pathCounter = 0;
 	private AWTPathProducer currentPath;
-	 private TikzGraphics2D g2d;
-//	private Graphics2D g2d;
-//	BufferedImage output;
+	private TikzGraphics2D g2d;
+	// private Graphics2D g2d;
+	// BufferedImage output;
 
 	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
-		 g2d = new TikzGraphics2D(tikzOutput);
+		g2d = new TikzGraphics2D(tikzOutput);
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?
 		currentPath.startPath();
 
-//		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-//		g2d = output.createGraphics();
-//		g2d.setPaint(Color.white);
-//		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
+		// output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+		// g2d = output.createGraphics();
+		// g2d.setPaint(Color.white);
+		// g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
 
 	}
 
@@ -100,14 +97,12 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
 		System.out.println("visited " + pathCounter + " Paths!");
-		 g2d.flush(); // force tikz-output!
-//		JOptionPane.showMessageDialog(null, new ImageIcon(output));
+		g2d.flush(); // force tikz-output!
+		// JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
 
-	@Override
 	public void exitCircle(CircleContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitCircle(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -120,7 +115,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 			// System.out.println("Attribute Name: "+a.NAME());
@@ -154,25 +149,53 @@ public class SVGParseListener extends SVGParserBaseListener {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
+			if (a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
+			}
+
 		}
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
-			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r), 2 * Integer.parseInt(r));
+			Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(r),
+					2 * Float.parseFloat(r));
+			g2d.fill(c2);
 		}
 
-		if (!strokeWidth.equals("")) {
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
 			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
-			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r), 2 * Integer.parseInt(r));
+			Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(r),
+					2 * Float.parseFloat(r));
+			g2d.draw(c2);
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
@@ -195,24 +218,28 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
-				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r),
-						2 * Integer.parseInt(r));
+				Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(r),
+						2 * Float.parseFloat(r));
+				g2d.fill(c2);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				c = Color.decode(strokeStyle);
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r),
-						2 * Integer.parseInt(r));
+				Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(r),
+						2 * Float.parseFloat(r));
+				g2d.draw(c2);
 			}
 		}
+
+		g2d.setTransform(old); // reset transform!
 
 	}
 
@@ -232,7 +259,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 
@@ -293,20 +320,21 @@ public class SVGParseListener extends SVGParserBaseListener {
 			}
 
 		}
-		if (!strokeWidth.equals("")) {
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
-		}
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
 			Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
 					Float.parseFloat(height));
 			g2d.fill(r);
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
+		}
+
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
 			Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
 					Float.parseFloat(height));
@@ -314,7 +342,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
@@ -337,23 +365,21 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
 				Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
 						Float.parseFloat(height));
 				g2d.fill(r);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				if (!strokeStyle.equals("none")) {
-					c = Color.decode(strokeStyle);
-					g2d.setColor(c);
-				}
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
+				g2d.setColor(c);
 				Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
 						Float.parseFloat(height));
 				g2d.draw(r);
@@ -365,8 +391,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitEllipse(EllipseContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitEllipse(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -380,7 +405,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 
@@ -416,27 +441,53 @@ public class SVGParseListener extends SVGParserBaseListener {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
+			if (a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
+			}
+
 		}
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
-			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
-					2 * Integer.parseInt(ry));
+			Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(rx),
+					2 * Float.parseFloat(ry));
+			g2d.fill(c2);
 		}
 
-		if (!strokeWidth.equals("")) {
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
 			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
-			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
-					2 * Integer.parseInt(ry));
+			Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(rx),
+					2 * Float.parseFloat(ry));
+			g2d.draw(c2);
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
@@ -459,36 +510,34 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
-				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
-						2 * Integer.parseInt(ry));
+				Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(rx),
+						2 * Float.parseFloat(ry));
+				g2d.fill(c2);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				c = Color.decode(strokeStyle);
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
-						2 * Integer.parseInt(ry));
+				Ellipse2D c2 = new Ellipse2D.Float(Float.parseFloat(cx), Float.parseFloat(cy), 2 * Float.parseFloat(rx),
+						2 * Float.parseFloat(ry));
+				g2d.draw(c2);
 			}
 		}
 
-		// String path = "\\draw (" + cx + "," + cy + ") ellipse (" + rx + " and " + ry
-		// + ");";
-
-		// tikzBuilder.appendString(path);
+		g2d.setTransform(old); // reset transform!
 
 	}
 
 	@Override
 	public void exitLine(LineContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitLine(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -502,7 +551,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 
@@ -538,25 +587,53 @@ public class SVGParseListener extends SVGParserBaseListener {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
+			if (a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
+			}
+
 		}
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
-			g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
+			Line2D c2 = new Line2D.Float(Float.parseFloat(x1), Float.parseFloat(y1), Float.parseFloat(x2),
+					Float.parseFloat(y2));
+			g2d.draw(c2);
 		}
 
-		if (!strokeWidth.equals("")) {
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
 			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
-			g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
+			Line2D c2 = new Line2D.Float(Float.parseFloat(x1), Float.parseFloat(y1), Float.parseFloat(x2),
+					Float.parseFloat(y2));
+			g2d.draw(c2);
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
@@ -579,32 +656,33 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
-				g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
+				Line2D c2 = new Line2D.Float(Float.parseFloat(x1), Float.parseFloat(y1), Float.parseFloat(x2),
+						Float.parseFloat(y2));
+				g2d.draw(c2);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				c = Color.decode(strokeStyle);
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
+				Line2D c2 = new Line2D.Float(Float.parseFloat(x1), Float.parseFloat(y1), Float.parseFloat(x2),
+						Float.parseFloat(y2));
+				g2d.draw(c2);
 			}
 		}
 
-		// String path = "\\draw (" + x1 + "," + y1 + ") -- (" + x2 + "," + y2 + ");";
-
-		// tikzBuilder.appendString(path);
+		g2d.setTransform(old); // reset transform!
 	}
 
 	@Override
 	public void exitPolygon(PolygonContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitPolygon(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -618,7 +696,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 
@@ -637,8 +715,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 					String[] coordinates = coordinate.split(",");
 
-					xPoly[i] = Integer.parseInt(coordinates[0]);
-					yPoly[i] = Integer.parseInt(coordinates[1]);
+					xPoly[i] = (int) Float.parseFloat(coordinates[0]);
+					yPoly[i] = (int) Float.parseFloat(coordinates[1]);
 
 				}
 
@@ -658,29 +736,55 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
+			}
+
+			if (a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
 			}
 
 		}
 
 		Polygon poly = new Polygon(xPoly, yPoly, xPoly.length);
+		// Polygon2D c2 = new Polygon2D(xPoly, yPoly, xPoly.length);
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
 			g2d.fillPolygon(poly);
+			// g2d.fill(c2);
 		}
 
-		if (!strokeWidth.equals("")) {
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
 			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
 			g2d.drawPolygon(poly);
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
@@ -703,28 +807,29 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
 				g2d.fillPolygon(poly);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				c = Color.decode(strokeStyle);
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
 				g2d.drawPolygon(poly);
 			}
 		}
+
+		g2d.setTransform(old); // reset transform!
 	}
 
 	@Override
 	public void exitPolyline(PolylineContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitPolyline(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -738,7 +843,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String strokeWidth = "";
 		String style = "";
 
-		Color c = Color.decode("#498bea");
+		Color c = Color.decode("#000000");
 
 		for (AttributeContext a : list) {
 
@@ -757,8 +862,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 					String[] coordinates = coordinate.split(",");
 
-					xPoly[i] = Integer.parseInt(coordinates[0]);
-					yPoly[i] = Integer.parseInt(coordinates[1]);
+					xPoly[i] = (int) Float.parseFloat(coordinates[0]);
+					yPoly[i] = (int) Float.parseFloat(coordinates[1]);
 
 				}
 
@@ -780,30 +885,56 @@ public class SVGParseListener extends SVGParserBaseListener {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
+			if (a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
+			}
 		}
 
-		if (!fill.equals("")) {
-			c = Color.decode(fill);
+		if (!fill.equals("") && !fill.equals("none")) {
+			c = stringToColor(fill);
 			g2d.setColor(c);
 			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+			// Polyline2D c2 = new Polyline2D.Float(Float.parseFloat(x1),
+			// Float.parseFloat(y1), Float.parseFloat(x2),Float.parseFloat(y2));
+			// g2d.draw(c2);
 		}
 
-		if (!strokeWidth.equals("")) {
+		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
 			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
 
-		if (!stroke.equals("")) {
-			c = Color.decode(stroke);
+		if (!stroke.equals("") && !stroke.equals("none")) {
+			c = stringToColor(stroke);
 			g2d.setColor(c);
 			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 		}
 
-		if (!style.equals("")) {
+		if (!style.equals("") && !style.equals("none")) {
 			String[] styles = style.split(";");
 
 			String fillStyle = "";
-			String strokeStyle = "";
 			String strokeWidthStyle = "";
+			String strokeStyle = "";
 
 			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
@@ -821,22 +952,24 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 
-			if (!fillStyle.equals("")) {
-				c = Color.decode(fillStyle);
+			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
+				c = stringToColor(fillStyle);
 				g2d.setColor(c);
 				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 			}
 
-			if (!strokeWidthStyle.equals("")) {
+			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
 				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
 
-			if (!strokeStyle.equals("")) {
-				c = Color.decode(strokeStyle);
+			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
+				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
 				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 			}
 		}
+
+		g2d.setTransform(old); // reset transform!
 
 	}
 
@@ -1330,7 +1463,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 				case "fill":
 					fill = a.STRING().toString().replaceAll("\"", "");
 					break;
-					
+
 				case "transform":
 					String transformNode = a.STRING().toString();
 					transformNode = transformNode.replaceAll("\"", "");
@@ -1353,11 +1486,11 @@ public class SVGParseListener extends SVGParserBaseListener {
 				}
 			}
 		}
-		
+
 		Color oldcolor = g2d.getColor();
 		g2d.setColor(SVGParseListener.stringToColor(fill));
-		g2d.drawString(text,(int)Float.parseFloat(x), (int)Float.parseFloat(y));
-		g2d.setColor(oldcolor);	//reset old color!
+		g2d.drawString(text, (int) Float.parseFloat(x), (int) Float.parseFloat(y));
+		g2d.setColor(oldcolor); // reset old color!
 		g2d.setTransform(oldtrans); // reset transform!
 	}
 
@@ -1370,26 +1503,26 @@ public class SVGParseListener extends SVGParserBaseListener {
 	public void exitUnnamedElement_SelfClose(UnnamedElement_SelfCloseContext ctx) {
 		System.out.println("FOUND UNKNOWN NODE! IGNORING.");
 	}
-	
-	 public static Color stringToColor(final String value) {
-		    if (value == null) {
-		      return Color.black;
-		    }
-		    try {
-		      // get color by hex or octal value
-		      return Color.decode(value);
-		    } catch (NumberFormatException nfe) {
-		      // if we can't decode lets try to get it by name
-		      try {
-		        // try to get a color by name using reflection
-		        final Field f = Color.class.getField(value);
 
-		        return (Color) f.get(null);
-		      } catch (Exception ce) {
-		        // if we can't get any color return black
-		        return Color.black;
-		      }
-		    }
-		  }
+	public static Color stringToColor(final String value) {
+		if (value == null) {
+			return Color.black;
+		}
+		try {
+			// get color by hex or octal value
+			return Color.decode(value);
+		} catch (NumberFormatException nfe) {
+			// if we can't decode lets try to get it by name
+			try {
+				// try to get a color by name using reflection
+				final Field f = Color.class.getField(value);
+
+				return (Color) f.get(null);
+			} catch (Exception ce) {
+				// if we can't get any color return black
+				return Color.black;
+			}
+		}
+	}
 
 }

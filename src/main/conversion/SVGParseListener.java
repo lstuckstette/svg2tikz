@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -49,20 +50,20 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	private int pathCounter = 0;
 	private AWTPathProducer currentPath;
-	private TikzGraphics2D g2d;
-	//private Graphics2D g2d;
-	//BufferedImage output;
+	// private TikzGraphics2D g2d;
+	private Graphics2D g2d;
+	BufferedImage output;
 
 	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
-		 g2d = new TikzGraphics2D(tikzOutput);
+		// g2d = new TikzGraphics2D(tikzOutput);
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?
 		currentPath.startPath();
 
-//		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-//		g2d = output.createGraphics();
-//		g2d.setPaint(Color.white);
-//		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
+		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+		g2d = output.createGraphics();
+		g2d.setPaint(Color.white);
+		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
 
 	}
 
@@ -92,8 +93,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
 		System.out.println("visited " + pathCounter + " Paths!");
-		g2d.flush(); // force tikz-output!
-		//JOptionPane.showMessageDialog(null, new ImageIcon(output));
+		// g2d.flush(); // force tikz-output!
+		JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
 
 	@Override
@@ -259,8 +260,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
-			
-			if(a.NAME().toString().equals("transform")) {
+
+			if (a.NAME().toString().equals("transform")) {
 				String transformNode = a.STRING().toString();
 				transformNode = transformNode.replaceAll("\"", "");
 				// example:
@@ -300,6 +301,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
 			g2d.drawRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+
 		}
 
 		if (!style.equals("")) {
@@ -345,14 +347,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 						(int) Float.parseFloat(height));
 			}
 		}
-		
+
 		g2d.setTransform(old); // reset transform!
-
-		// String path = "\\draw (" + x + "," + y + ") -- (" + height + "," + y + ") --
-		// (" + height + "," + width+ ") -- (" + x + "," + width + ") -- (" + x + "," +
-		// y + ");";
-
-		// tikzBuilder.appendString(path);
 	}
 
 	@Override
@@ -834,21 +830,39 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void enterPath(PathContext ctx) {
-		System.out.println("reached!?");
-
+		
+		currentPath = new AWTPathProducer();
+		currentPath.setWindingRule(0); // tf is a windingrule oO?
+		currentPath.startPath();
 	}
 
 	@Override
 	public void enterG(GContext ctx) {
-		System.out.println("visit G!");
+		List<AttributeContext> list = ctx.attribute();
+
+		for (AttributeContext a : list) {
+			if (a.NAME() != null) {
+				switch (a.NAME().toString()) {
+
+				case "transform":
+					String transformNode = a.STRING().toString().replaceAll("\"", "");
+					if(transformNode.startsWith("translate")) {
+						transformNode = transformNode.replaceAll("translate", "");
+						transformNode = transformNode.replaceAll("\\(", "");
+						transformNode = transformNode.replaceAll("\\)", "");
+						String [] variables = transformNode.split(",");
+						float x = Float.parseFloat(variables[0]);
+						float y = Float.parseFloat(variables[1]);
+						g2d.translate(x, y);
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
 	public void exitPath(PathContext ctx) {
-		/*
-		 * gute quelle: https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
-		 * 
-		 */
 
 		pathCounter++;
 		Shape path = currentPath.getShape();
@@ -916,9 +930,10 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!fillColor.equals("none")) {
 				Color c = Color.decode(fillColor);
 				g2d.setColor(c);
+				g2d.fill(path);
 			}
 
-			g2d.fill(path);
+			
 		}
 
 		if (!strokeWidth.equals("")) {
@@ -930,13 +945,19 @@ public class SVGParseListener extends SVGParserBaseListener {
 			g2d.setColor(c);
 			g2d.draw(path);
 		}
+		
+		if(strokeColor.equals("") && fillColor.equals("")) {
+			//defaults to Black fill!
+			g2d.setColor(Color.black);
+			g2d.fill(path);
+		}
 
 		g2d.setTransform(old); // reset transform!
 		g2d.setColor(oldColor); // reset Color!
 		// create new
-		currentPath = new AWTPathProducer();
-		currentPath.setWindingRule(0); // tf is a windingrule oO?
-		currentPath.startPath();
+//		currentPath = new AWTPathProducer();
+//		currentPath.setWindingRule(0); // tf is a windingrule oO?
+//		currentPath.startPath();
 
 	}
 

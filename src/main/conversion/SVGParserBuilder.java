@@ -12,10 +12,12 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import main.antlr4.SVGLexer;
 import main.antlr4.SVGParser;
+import main.antlr4.SVGParser.SvgRootContext;
 
 public class SVGParserBuilder {
 
@@ -54,10 +56,13 @@ public class SVGParserBuilder {
 	public void parseFile() {
 		//Build new Parselistener
 		SVGParseListener parseListener = new SVGParseListener(tikzOutput);
-		svgParser.addParseListener(parseListener);
-		//Get 'root' element (hopefully the 'svg' element)
-		//SvgRootContext svgCtx = svgParser.svgRoot();
-		svgParser.svgRoot();
+		
+		SvgRootContext svgRootCtx = svgParser.svgRoot();
+		
+		
+		ParseTreeWalker walker = new ParseTreeWalker();
+		
+		walker.walk(parseListener, svgRootCtx);
 		
 		
 		

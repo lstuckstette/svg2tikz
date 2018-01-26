@@ -169,7 +169,12 @@ public class TikzGraphics2D extends AbstractGraphicsInterface {
                 // TODO: Implement this later!
                 break;
             case PathIterator.SEG_CUBICTO:
-                tikz += " .. (" + s[0] + "pt, " + s[1] + "pt) and (" + s[2] + "pt, " + s[3] + "pt) .. (" + s[4] + "pt, " + s[5] + "pt)";
+            	
+            	//original:
+                //tikz += " .. (" + s[0] + "pt, " + s[1] + "pt) and (" + s[2] + "pt, " + s[3] + "pt) .. (" + s[4] + "pt, " + s[5] + "pt)";
+            	
+                //custom: -> works!
+                tikz += " .. controls (" + s[0] + "pt, " + s[1] + "pt) and (" + s[2] + "pt, " + s[3] + "pt) .. (" + s[4] + "pt, " + s[5] + "pt)";
                 break;
             case PathIterator.SEG_CLOSE:
                 tikz += " -- cycle";
@@ -206,7 +211,7 @@ public class TikzGraphics2D extends AbstractGraphicsInterface {
     protected void flushInternal() {
         if((preamble != null && !preamble.equals("")) || (getCommands() != null && !getCommands().isEmpty())) {
             out.print(preamble);
-            out.println("\\begin{tikzpicture}[yscale=-1]");
+            out.println("\\begin{tikzpicture}[yscale=-1, scale=0.5]");
             /* close out any existing clipping scopes */
             setClip(null);
             //out.print(tikz);

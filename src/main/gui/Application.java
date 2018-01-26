@@ -174,6 +174,7 @@ public class Application extends JFrame {
 		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 0;
 		add(new JButton(conversionCancelAction), constraints);
+		
 	}
 
 	private void search() {

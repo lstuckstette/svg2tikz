@@ -26,7 +26,7 @@ element	: '<' 'circle' attribute+ '/>'													# Circle
 		| '<' 'defs' attribute* '>' element+ '<' SLASH 'defs' '>'						# Defs
 		| '<' 'linearGradient' attribute* '>' element+ '<' SLASH 'linearGradient' '>'	# LinearGradient
 		| '<' 'radialGradient' attribute* '>' element+ '<' SLASH 'radialGradient' '>'	# RadialGradient
-		| '<' NAME attribute* element* '>' 												# UnnamedElement
+		| '<' NAME attribute* '>' 	element* '<' SLASH NAME '>'							# UnnamedElement
 		| '<' NAME attribute* '/>'														# UnnamedElement_SelfClose
 		;
 

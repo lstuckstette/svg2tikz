@@ -6,21 +6,17 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import main.antlr4.SVGParser.AttributeContext;
 import main.antlr4.SVGParser.CircleContext;
 import main.antlr4.SVGParser.EllipseContext;
@@ -33,9 +29,20 @@ import main.antlr4.SVGParser.Path_element_arc_relContext;
 import main.antlr4.SVGParser.Path_element_closeContext;
 import main.antlr4.SVGParser.Path_element_cubiccurveContext;
 import main.antlr4.SVGParser.Path_element_cubiccurve_relContext;
+import main.antlr4.SVGParser.Path_element_cubicreflectcurveContext;
+import main.antlr4.SVGParser.Path_element_cubicreflectcurve_relContext;
+import main.antlr4.SVGParser.Path_element_horizontallineContext;
+import main.antlr4.SVGParser.Path_element_horizontalline_relContext;
+import main.antlr4.SVGParser.Path_element_linetoContext;
 import main.antlr4.SVGParser.Path_element_lineto_relContext;
 import main.antlr4.SVGParser.Path_element_movetoContext;
 import main.antlr4.SVGParser.Path_element_moveto_relContext;
+import main.antlr4.SVGParser.Path_element_quadraticcurveContext;
+import main.antlr4.SVGParser.Path_element_quadraticcurve_relContext;
+import main.antlr4.SVGParser.Path_element_quadraticreflectcurveContext;
+import main.antlr4.SVGParser.Path_element_quadraticreflectcurve_relContext;
+import main.antlr4.SVGParser.Path_element_verticallineContext;
+import main.antlr4.SVGParser.Path_element_verticalline_relContext;
 import main.antlr4.SVGParser.PolygonContext;
 import main.antlr4.SVGParser.PolylineContext;
 import main.antlr4.SVGParser.RectContext;
@@ -50,20 +57,20 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	private int pathCounter = 0;
 	private AWTPathProducer currentPath;
-	// private TikzGraphics2D g2d;
-	private Graphics2D g2d;
-	BufferedImage output;
+	 private TikzGraphics2D g2d;
+//	private Graphics2D g2d;
+//	BufferedImage output;
 
 	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
-		// g2d = new TikzGraphics2D(tikzOutput);
+		 g2d = new TikzGraphics2D(tikzOutput);
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?
 		currentPath.startPath();
 
-		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-		g2d = output.createGraphics();
-		g2d.setPaint(Color.white);
-		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
+//		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+//		g2d = output.createGraphics();
+//		g2d.setPaint(Color.white);
+//		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
 
 	}
 
@@ -93,8 +100,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
 		System.out.println("visited " + pathCounter + " Paths!");
-		// g2d.flush(); // force tikz-output!
-		JOptionPane.showMessageDialog(null, new ImageIcon(output));
+		 g2d.flush(); // force tikz-output!
+//		JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
 
 	@Override
@@ -286,21 +293,24 @@ public class SVGParseListener extends SVGParserBaseListener {
 			}
 
 		}
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
+		}
 
 		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
-			g2d.fillRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
-		}
-
-		if (!strokeWidth.equals("")) {
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
+			Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
+					Float.parseFloat(height));
+			g2d.fill(r);
 		}
 
 		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
-			g2d.drawRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+			Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
+					Float.parseFloat(height));
+			g2d.draw(r);
 
 		}
 
@@ -330,8 +340,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
-				g2d.fillRect((int) Float.parseFloat(x), (int) Float.parseFloat(y), (int) Float.parseFloat(width),
-						(int) Float.parseFloat(height));
+				Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
+						Float.parseFloat(height));
+				g2d.fill(r);
 			}
 
 			if (!strokeWidthStyle.equals("")) {
@@ -343,8 +354,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 					c = Color.decode(strokeStyle);
 					g2d.setColor(c);
 				}
-				g2d.drawRect((int) Float.parseFloat(x), (int) Float.parseFloat(y), (int) Float.parseFloat(width),
-						(int) Float.parseFloat(height));
+				Rectangle2D r = new Rectangle2D.Float(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width),
+						Float.parseFloat(height));
+				g2d.draw(r);
 			}
 		}
 
@@ -830,7 +842,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void enterPath(PathContext ctx) {
-		
+
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?
 		currentPath.startPath();
@@ -846,11 +858,11 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 				case "transform":
 					String transformNode = a.STRING().toString().replaceAll("\"", "");
-					if(transformNode.startsWith("translate")) {
+					if (transformNode.startsWith("translate")) {
 						transformNode = transformNode.replaceAll("translate", "");
 						transformNode = transformNode.replaceAll("\\(", "");
 						transformNode = transformNode.replaceAll("\\)", "");
-						String [] variables = transformNode.split(",");
+						String[] variables = transformNode.split(",");
 						float x = Float.parseFloat(variables[0]);
 						float y = Float.parseFloat(variables[1]);
 						g2d.translate(x, y);
@@ -933,7 +945,6 @@ public class SVGParseListener extends SVGParserBaseListener {
 				g2d.fill(path);
 			}
 
-			
 		}
 
 		if (!strokeWidth.equals("")) {
@@ -945,9 +956,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 			g2d.setColor(c);
 			g2d.draw(path);
 		}
-		
-		if(strokeColor.equals("") && fillColor.equals("")) {
-			//defaults to Black fill!
+
+		if (strokeColor.equals("") && fillColor.equals("")) {
+			// defaults to Black fill!
 			g2d.setColor(Color.black);
 			g2d.fill(path);
 		}
@@ -955,9 +966,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 		g2d.setTransform(old); // reset transform!
 		g2d.setColor(oldColor); // reset Color!
 		// create new
-//		currentPath = new AWTPathProducer();
-//		currentPath.setWindingRule(0); // tf is a windingrule oO?
-//		currentPath.startPath();
+		// currentPath = new AWTPathProducer();
+		// currentPath.setWindingRule(0); // tf is a windingrule oO?
+		// currentPath.startPath();
 
 	}
 
@@ -979,6 +990,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
+		System.out.println("moveto_rel!");
 		List<NumberContext> attributes = ctx.number();
 		// check input parameters:
 		if (attributes.size() < 2) {
@@ -1109,9 +1121,244 @@ public class SVGParseListener extends SVGParserBaseListener {
 	}
 
 	@Override
+	public void exitPath_element_lineto(Path_element_linetoContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on lineto-abs! Too few inputs.");
+			return;
+		}
+
+		float x = SVGParseListener.getNumber(attributes.get(0));
+		float y = SVGParseListener.getNumber(attributes.get(1));
+		currentPath.linetoAbs(x, y);
+	}
+
+	@Override
+	public void exitPath_element_horizontalline_rel(Path_element_horizontalline_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		NumberContext attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes == null) {
+			System.out.println("Error on hline-rel! Too few inputs.");
+			return;
+		}
+
+		float x = SVGParseListener.getNumber(attributes);
+		currentPath.linetoHorizontalRel(x);
+	}
+
+	@Override
+	public void exitPath_element_horizontalline(Path_element_horizontallineContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		NumberContext attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes == null) {
+			System.out.println("Error on hline-abs! Too few inputs.");
+			return;
+		}
+
+		float x = SVGParseListener.getNumber(attributes);
+		currentPath.linetoHorizontalAbs(x);
+	}
+
+	@Override
+	public void exitPath_element_verticalline_rel(Path_element_verticalline_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		NumberContext attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes == null) {
+			System.out.println("Error on vline-rel! Too few inputs.");
+			return;
+		}
+
+		float y = SVGParseListener.getNumber(attributes);
+		currentPath.linetoVerticalRel(y);
+	}
+
+	@Override
+	public void exitPath_element_verticalline(Path_element_verticallineContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		NumberContext attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes == null) {
+			System.out.println("Error on vline-abs! Too few inputs.");
+			return;
+		}
+
+		float y = SVGParseListener.getNumber(attributes);
+		currentPath.linetoVerticalAbs(y);
+	}
+
+	@Override
+	public void exitPath_element_cubicreflectcurve_rel(Path_element_cubicreflectcurve_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 4) {
+			System.out.println("Error on cubic-curve-reflect-rel! Too few inputs.");
+			return;
+		}
+
+		float x2 = SVGParseListener.getNumber(attributes.get(0));
+		float y2 = SVGParseListener.getNumber(attributes.get(1));
+		float x = SVGParseListener.getNumber(attributes.get(2));
+		float y = SVGParseListener.getNumber(attributes.get(3));
+
+		currentPath.curvetoCubicSmoothRel(x2, y2, x, y);
+	}
+
+	@Override
+	public void exitPath_element_cubicreflectcurve(Path_element_cubicreflectcurveContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 4) {
+			System.out.println("Error on cubic-curve-reflect-abs! Too few inputs.");
+			return;
+		}
+
+		float x2 = SVGParseListener.getNumber(attributes.get(0));
+		float y2 = SVGParseListener.getNumber(attributes.get(1));
+		float x = SVGParseListener.getNumber(attributes.get(2));
+		float y = SVGParseListener.getNumber(attributes.get(3));
+
+		currentPath.curvetoCubicSmoothAbs(x2, y2, x, y);
+	}
+
+	@Override
+	public void exitPath_element_quadraticcurve_rel(Path_element_quadraticcurve_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 4) {
+			System.out.println("Error on quadratic-curve-rel! Too few inputs.");
+			return;
+		}
+
+		float x1 = SVGParseListener.getNumber(attributes.get(0));
+		float y1 = SVGParseListener.getNumber(attributes.get(1));
+		float x = SVGParseListener.getNumber(attributes.get(2));
+		float y = SVGParseListener.getNumber(attributes.get(3));
+
+		currentPath.curvetoQuadraticRel(x1, y1, x, y);
+		;
+	}
+
+	@Override
+	public void exitPath_element_quadraticcurve(Path_element_quadraticcurveContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 4) {
+			System.out.println("Error on quadratic-curve-abs! Too few inputs.");
+			return;
+		}
+
+		float x1 = SVGParseListener.getNumber(attributes.get(0));
+		float y1 = SVGParseListener.getNumber(attributes.get(1));
+		float x = SVGParseListener.getNumber(attributes.get(2));
+		float y = SVGParseListener.getNumber(attributes.get(3));
+
+		currentPath.curvetoQuadraticAbs(x1, y1, x, y);
+		;
+	}
+
+	@Override
+	public void exitPath_element_quadraticreflectcurve_rel(Path_element_quadraticreflectcurve_relContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on quadratic-curve-reflect-rel! Too few inputs.");
+			return;
+		}
+
+		float x = SVGParseListener.getNumber(attributes.get(0));
+		float y = SVGParseListener.getNumber(attributes.get(1));
+
+		currentPath.curvetoQuadraticSmoothRel(x, y);
+	}
+
+	@Override
+	public void exitPath_element_quadraticreflectcurve(Path_element_quadraticreflectcurveContext ctx) {
+		// check: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+		List<NumberContext> attributes = ctx.number();
+
+		// check input parameters:
+		if (attributes.size() < 2) {
+			System.out.println("Error on quadratic-curve-reflect-abs! Too few inputs.");
+			return;
+		}
+
+		float x = SVGParseListener.getNumber(attributes.get(0));
+		float y = SVGParseListener.getNumber(attributes.get(1));
+
+		currentPath.curvetoQuadraticSmoothAbs(x, y);
+	}
+
+	@Override
 	public void exitText(TextContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitText(ctx);
+		List<AttributeContext> attributes = ctx.attribute();
+		String text = ctx.TEXT().toString();
+
+		AffineTransform oldtrans = g2d.getTransform(); // save old Transform!
+		String x = "0";
+		String y = "0";
+		String fill = "";
+
+		for (AttributeContext a : attributes) {
+			if (a.NAME() != null) {
+				switch (a.NAME().toString()) {
+				case "x":
+					x = a.STRING().toString().replaceAll("\"", "");
+					break;
+				case "y":
+					y = a.STRING().toString().replaceAll("\"", "");
+					break;
+				case "fill":
+					fill = a.STRING().toString().replaceAll("\"", "");
+					break;
+					
+				case "transform":
+					String transformNode = a.STRING().toString();
+					transformNode = transformNode.replaceAll("\"", "");
+					transformNode = transformNode.replace("matrix", "");
+					transformNode = transformNode.replaceAll("\\(", "");
+					transformNode = transformNode.replaceAll("\\)", "");
+					String[] variableStrings = transformNode.split(",");
+					if (variableStrings.length != 6) {
+						System.err.println("malformed transform-matrix in path!");
+						break;
+					}
+					float variables[] = new float[6];
+					for (int i = 0; i < variableStrings.length; i++) {
+						variables[i] = Float.parseFloat(variableStrings[i]);
+					}
+					AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+							variables[4], variables[5]);
+					g2d.transform(trans); // add transformation to graphics!
+					break;
+				}
+			}
+		}
+		
+		Color oldcolor = g2d.getColor();
+		g2d.setColor(SVGParseListener.stringToColor(fill));
+		g2d.drawString(text,(int)Float.parseFloat(x), (int)Float.parseFloat(y));
+		g2d.setColor(oldcolor);	//reset old color!
+		g2d.setTransform(oldtrans); // reset transform!
 	}
 
 	@Override
@@ -1123,5 +1370,26 @@ public class SVGParseListener extends SVGParserBaseListener {
 	public void exitUnnamedElement_SelfClose(UnnamedElement_SelfCloseContext ctx) {
 		System.out.println("FOUND UNKNOWN NODE! IGNORING.");
 	}
+	
+	 public static Color stringToColor(final String value) {
+		    if (value == null) {
+		      return Color.black;
+		    }
+		    try {
+		      // get color by hex or octal value
+		      return Color.decode(value);
+		    } catch (NumberFormatException nfe) {
+		      // if we can't decode lets try to get it by name
+		      try {
+		        // try to get a color by name using reflection
+		        final Field f = Color.class.getField(value);
+
+		        return (Color) f.get(null);
+		      } catch (Exception ce) {
+		        // if we can't get any color return black
+		        return Color.black;
+		      }
+		    }
+		  }
 
 }

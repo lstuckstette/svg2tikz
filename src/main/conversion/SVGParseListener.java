@@ -47,29 +47,22 @@ import main.jtikz.TikzGraphics2D;
 
 public class SVGParseListener extends SVGParserBaseListener {
 
-	private int pathCounter=0;
+	private int pathCounter = 0;
 	private AWTPathProducer currentPath;
-	//private TikzGraphics2D g2d;
-	private Graphics2D g2d;
-	BufferedImage output;
+	private TikzGraphics2D g2d;
+	//private Graphics2D g2d;
+	//BufferedImage output;
 
 	public SVGParseListener(ByteArrayOutputStream tikzOutput) {
-		//g2d = new TikzGraphics2D(tikzOutput);
+		 g2d = new TikzGraphics2D(tikzOutput);
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?
 		currentPath.startPath();
 
-		
-		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-		
-		g2d = output.createGraphics();
-		
-		g2d.setPaint ( Color.white );
-		
-		
-        g2d.fillRect ( 0, 0, output.getWidth(), output.getHeight() );
-		
-		
+//		output = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+//		g2d = output.createGraphics();
+//		g2d.setPaint(Color.white);
+//		g2d.fillRect(0, 0, output.getWidth(), output.getHeight());
 
 	}
 
@@ -98,9 +91,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		System.out.println("visited "+pathCounter+" Paths!");
-		//g2d.flush(); // force tikz-output!
-		JOptionPane.showMessageDialog(null, new ImageIcon(output));
+		System.out.println("visited " + pathCounter + " Paths!");
+		g2d.flush(); // force tikz-output!
+		//JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
 
 	@Override
@@ -118,9 +111,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String stroke = "";
 		String strokeWidth = "";
 		String style = "";
-		
+
 		Color c = Color.decode("#498bea");
-		
+
 		for (AttributeContext a : list) {
 			// System.out.println("Attribute Name: "+a.NAME());
 			// System.out.println("Attribute Value: "+a.STRING());
@@ -136,89 +129,80 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (a.NAME().toString().equals("cy")) {
 				cy = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
 		}
-		
-		if(!fill.equals(""))
-		{
+
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
-			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(r), 2*Integer.parseInt(r));
+			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r), 2 * Integer.parseInt(r));
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
-			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(r), 2*Integer.parseInt(r));
+			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r), 2 * Integer.parseInt(r));
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
-				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(r), 2*Integer.parseInt(r));
+				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r),
+						2 * Integer.parseInt(r));
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
+
+			if (!strokeStyle.equals("")) {
 				c = Color.decode(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(r), 2*Integer.parseInt(r));
+				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(r),
+						2 * Integer.parseInt(r));
 			}
 		}
 
@@ -226,8 +210,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitRect(RectContext ctx) {
-		// TODO Auto-generated method stub
-		super.exitRect(ctx);
+		AffineTransform old = g2d.getTransform(); // save old Transform!
 
 		List<AttributeContext> list = ctx.attribute();
 
@@ -235,14 +218,14 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String y = "0";
 		String width = "0";
 		String height = "0";
-		
+
 		String fill = "";
 		String stroke = "";
 		String strokeWidth = "";
 		String style = "";
 
 		Color c = Color.decode("#498bea");
-		
+
 		for (AttributeContext a : list) {
 
 			if (a.NAME().toString().equals("x")) {
@@ -260,97 +243,118 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (a.NAME().toString().equals("height")) {
 				height = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
-
+			
+			if(a.NAME().toString().equals("transform")) {
+				String transformNode = a.STRING().toString();
+				transformNode = transformNode.replaceAll("\"", "");
+				// example:
+				// matrix(0.7071067811865474,0.7071067811865473,-0.7071067811865474,0.7071067811865473,0,0)
+				transformNode = transformNode.replace("matrix", "");
+				transformNode = transformNode.replaceAll("\\(", "");
+				transformNode = transformNode.replaceAll("\\)", "");
+				// example:
+				// 1.892338560388366,1.892338560388366,-1.892338560388366,1.892338560388366,588.3352226488195,-294.8095263511118
+				String[] variableStrings = transformNode.split(",");
+				if (variableStrings.length != 6) {
+					System.err.println("malformed transform-matrix in path!");
+					break;
+				}
+				float variables[] = new float[6];
+				for (int i = 0; i < variableStrings.length; i++) {
+					variables[i] = Float.parseFloat(variableStrings[i]);
+				}
+				AffineTransform trans = new AffineTransform(variables[0], variables[1], variables[2], variables[3],
+						variables[4], variables[5]);
+				g2d.transform(trans); // add transformation to graphics!
+			}
 
 		}
 
-		if(!fill.equals(""))
-		{
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
 			g2d.fillRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
 			g2d.drawRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
-				g2d.fillRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+				g2d.fillRect((int) Float.parseFloat(x), (int) Float.parseFloat(y), (int) Float.parseFloat(width),
+						(int) Float.parseFloat(height));
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
-				c = Color.decode(strokeStyle);
-				g2d.setColor(c);
-				g2d.drawRect(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+
+			if (!strokeStyle.equals("")) {
+				if (!strokeStyle.equals("none")) {
+					c = Color.decode(strokeStyle);
+					g2d.setColor(c);
+				}
+				g2d.drawRect((int) Float.parseFloat(x), (int) Float.parseFloat(y), (int) Float.parseFloat(width),
+						(int) Float.parseFloat(height));
 			}
 		}
 		
-		//String path = "\\draw (" + x + "," + y + ") -- (" + height + "," + y + ") -- (" + height + "," + width+ ") -- (" + x + "," + width + ") -- (" + x + "," + y + ");";
+		g2d.setTransform(old); // reset transform!
+
+		// String path = "\\draw (" + x + "," + y + ") -- (" + height + "," + y + ") --
+		// (" + height + "," + width+ ") -- (" + x + "," + width + ") -- (" + x + "," +
+		// y + ");";
 
 		// tikzBuilder.appendString(path);
 	}
+
 	@Override
 	public void exitEllipse(EllipseContext ctx) {
 		// TODO Auto-generated method stub
@@ -362,7 +366,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String cy = "0";
 		String rx = "0";
 		String ry = "0";
-		
+
 		String fill = "";
 		String stroke = "";
 		String strokeWidth = "";
@@ -387,93 +391,87 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (a.NAME().toString().equals("ry")) {
 				ry = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
 		}
-		
-		if(!fill.equals(""))
-		{
+
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
-			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(rx), 2*Integer.parseInt(ry));
+			g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
+					2 * Integer.parseInt(ry));
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
-			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(rx), 2*Integer.parseInt(ry));
+			g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
+					2 * Integer.parseInt(ry));
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
-				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(rx), 2*Integer.parseInt(ry));
+				g2d.fillOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
+						2 * Integer.parseInt(ry));
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
+
+			if (!strokeStyle.equals("")) {
 				c = Color.decode(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2*Integer.parseInt(rx), 2*Integer.parseInt(ry));
+				g2d.drawOval(Integer.parseInt(cx), Integer.parseInt(cx), 2 * Integer.parseInt(rx),
+						2 * Integer.parseInt(ry));
 			}
 		}
 
-		//String path = "\\draw (" + cx + "," + cy + ") ellipse (" + rx + " and " + ry + ");";
+		// String path = "\\draw (" + cx + "," + cy + ") ellipse (" + rx + " and " + ry
+		// + ");";
 
 		// tikzBuilder.appendString(path);
 
@@ -490,7 +488,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		String y1 = "0";
 		String x2 = "0";
 		String y2 = "0";
-		
+
 		String fill = "";
 		String stroke = "";
 		String strokeWidth = "";
@@ -515,93 +513,82 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (a.NAME().toString().equals("y2")) {
 				y2 = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
 		}
-		
-		if(!fill.equals(""))
-		{
+
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
 			g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
 			g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
 				g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
+
+			if (!strokeStyle.equals("")) {
 				c = Color.decode(strokeStyle);
 				g2d.setColor(c);
 				g2d.drawLine(Integer.parseInt(x1), Integer.parseInt(y1), Integer.parseInt(x2), Integer.parseInt(y2));
 			}
 		}
 
-		//String path = "\\draw (" + x1 + "," + y1 + ") -- (" + x2 + "," + y2 + ");";
+		// String path = "\\draw (" + x1 + "," + y1 + ") -- (" + x2 + "," + y2 + ");";
 
 		// tikzBuilder.appendString(path);
 	}
@@ -614,17 +601,17 @@ public class SVGParseListener extends SVGParserBaseListener {
 		List<AttributeContext> list = ctx.attribute();
 
 		String points = "0,0";
-		
-		int xPoly[] = {0};
-        int yPoly[] = {0};
 
-        String fill = "";
+		int xPoly[] = { 0 };
+		int yPoly[] = { 0 };
+
+		String fill = "";
 		String stroke = "";
 		String strokeWidth = "";
 		String style = "";
 
 		Color c = Color.decode("#498bea");
-        
+
 		for (AttributeContext a : list) {
 
 			if (a.NAME().toString().equals("points")) {
@@ -632,104 +619,93 @@ public class SVGParseListener extends SVGParserBaseListener {
 				points = a.STRING().getText().replaceAll("\"", "");
 
 				String[] point = points.split(" ");
-				
+
 				xPoly = new int[point.length];
-		        yPoly = new int[point.length];
+				yPoly = new int[point.length];
 
 				for (int i = 0; i < point.length; i++) {
 
 					String coordinate = point[i];
 
-					String[] coordinates =coordinate.split(",");
-					
-					xPoly[i]=Integer.parseInt(coordinates[0]);
-					yPoly[i]=Integer.parseInt(coordinates[1]);
+					String[] coordinates = coordinate.split(",");
+
+					xPoly[i] = Integer.parseInt(coordinates[0]);
+					yPoly[i] = Integer.parseInt(coordinates[1]);
 
 				}
 
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
 		}
 
-        Polygon poly = new Polygon(xPoly, yPoly, xPoly.length);
-		
-        if(!fill.equals(""))
-		{
+		Polygon poly = new Polygon(xPoly, yPoly, xPoly.length);
+
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
 			g2d.fillPolygon(poly);
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
 			g2d.drawPolygon(poly);
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
 				g2d.fillPolygon(poly);
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
+
+			if (!strokeStyle.equals("")) {
 				c = Color.decode(strokeStyle);
 				g2d.setColor(c);
 				g2d.drawPolygon(poly);
@@ -745,11 +721,11 @@ public class SVGParseListener extends SVGParserBaseListener {
 		List<AttributeContext> list = ctx.attribute();
 
 		String points = "0,0";
-		
-		int xPoly[] = {0};
-        int yPoly[] = {0};
-        
-        String fill = "";
+
+		int xPoly[] = { 0 };
+		int yPoly[] = { 0 };
+
+		String fill = "";
 		String stroke = "";
 		String strokeWidth = "";
 		String style = "";
@@ -763,102 +739,91 @@ public class SVGParseListener extends SVGParserBaseListener {
 				points = a.STRING().getText().replaceAll("\"", "");
 
 				String[] point = points.split(" ");
-				
+
 				xPoly = new int[point.length];
-		        yPoly = new int[point.length];
+				yPoly = new int[point.length];
 
 				for (int i = 0; i < point.length; i++) {
 
 					String coordinate = point[i];
 
-					String[] coordinates =coordinate.split(",");
-					
-					xPoly[i]=Integer.parseInt(coordinates[0]);
-					yPoly[i]=Integer.parseInt(coordinates[1]);
+					String[] coordinates = coordinate.split(",");
+
+					xPoly[i] = Integer.parseInt(coordinates[0]);
+					yPoly[i] = Integer.parseInt(coordinates[1]);
 
 				}
 
 			}
-			
+
 			if (a.NAME().toString().equals("stroke")) {
 				stroke = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("fill")) {
 				fill = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("stroke-width")) {
 				strokeWidth = a.STRING().getText().replaceAll("\"", "");
 			}
-			
+
 			if (a.NAME().toString().equals("style")) {
 				style = a.STRING().getText().replaceAll("\"", "");
 			}
 
 		}
-		
-		if(!fill.equals(""))
-		{
+
+		if (!fill.equals("")) {
 			c = Color.decode(fill);
 			g2d.setColor(c);
 			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!stroke.equals(""))
-		{
+
+		if (!stroke.equals("")) {
 			c = Color.decode(stroke);
 			g2d.setColor(c);
 			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 		}
-		
-		if(!style.equals(""))
-		{
+
+		if (!style.equals("")) {
 			String[] styles = style.split(";");
-			
+
 			String fillStyle = "";
 			String strokeStyle = "";
 			String strokeWidthStyle = "";
-			
-			for(int i=0;i<styles.length;i++)
-			{
+
+			for (int i = 0; i < styles.length; i++) {
 				String[] styleAttribute = styles[i].split(":");
-				
-				if(styleAttribute[0].equals("fill"))
-				{
-					fillStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("fill")) {
+					fillStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke-width"))
-				{
-					strokeWidthStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke-width")) {
+					strokeWidthStyle = styleAttribute[1];
 				}
-				
-				if(styleAttribute[0].equals("stroke"))
-				{
-					strokeStyle=styleAttribute[1];
+
+				if (styleAttribute[0].equals("stroke")) {
+					strokeStyle = styleAttribute[1];
 				}
 			}
-			
-			if(!fillStyle.equals(""))
-			{
+
+			if (!fillStyle.equals("")) {
 				c = Color.decode(fillStyle);
 				g2d.setColor(c);
 				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
 			}
-			
-			if(!strokeWidthStyle.equals(""))
-			{
-				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle))); 
+
+			if (!strokeWidthStyle.equals("")) {
+				g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidthStyle)));
 			}
-			
-			if(!strokeStyle.equals(""))
-			{
+
+			if (!strokeStyle.equals("")) {
 				c = Color.decode(strokeStyle);
 				g2d.setColor(c);
 				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
@@ -884,7 +849,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 		 * gute quelle: https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
 		 * 
 		 */
-		
+
 		pathCounter++;
 		Shape path = currentPath.getShape();
 		AffineTransform old = g2d.getTransform(); // save old Transform!
@@ -934,10 +899,10 @@ public class SVGParseListener extends SVGParserBaseListener {
 					break;
 
 				case "style":
-					String style =a.STRING().toString().replaceAll("\"", "");
-					String [] styleContent = style.split(";");
-					for(String styleAttr : styleContent) {
-						if(styleAttr.startsWith("fill:")) {
+					String style = a.STRING().toString().replaceAll("\"", "");
+					String[] styleContent = style.split(";");
+					for (String styleAttr : styleContent) {
+						if (styleAttr.startsWith("fill:")) {
 							fillColor = styleAttr.split(":")[1];
 						}
 					}
@@ -947,30 +912,27 @@ public class SVGParseListener extends SVGParserBaseListener {
 			}
 		}
 
-		if(!fillColor.equals(""))
-		{
-			if(!fillColor.equals("none")) {
-			Color c = Color.decode(fillColor);
-			g2d.setColor(c);
+		if (!fillColor.equals("")) {
+			if (!fillColor.equals("none")) {
+				Color c = Color.decode(fillColor);
+				g2d.setColor(c);
 			}
-			
+
 			g2d.fill(path);
 		}
-		
-		if(!strokeWidth.equals(""))
-		{
-			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth))); 
+
+		if (!strokeWidth.equals("")) {
+			g2d.setStroke(new BasicStroke(Float.parseFloat(strokeWidth)));
 		}
-		
-		if(!strokeColor.equals(""))
-		{
+
+		if (!strokeColor.equals("")) {
 			Color c = Color.decode(strokeColor);
 			g2d.setColor(c);
 			g2d.draw(path);
 		}
-				
+
 		g2d.setTransform(old); // reset transform!
-		g2d.setColor(oldColor); //reset Color!
+		g2d.setColor(oldColor); // reset Color!
 		// create new
 		currentPath = new AWTPathProducer();
 		currentPath.setWindingRule(0); // tf is a windingrule oO?

@@ -18,7 +18,7 @@ public class LatexBuilder {
 	private void initLateX() {
 
 		appendLine("\\documentclass{article}");
-		appendLine("\\usepackage{tikz}");
+		appendLine("\\usepackage{tikz,pgf}");
 		appendLine("\\begin{document}");
 
 	}

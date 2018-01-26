@@ -52,11 +52,6 @@ EQUALS			: '=' ;
 PATH_ATTRIBUTE	: 'd="' 		-> pushMode(PATHATTRIBUTE);
 STRING			: '"' ~[<"]* '"' ;
 				
-				
-
-
-
-
 // skip whitespace again, because of inner mode ~
 WS_INSIDE  :   [ \t\n\r]+ -> skip ;
 // skip SVG/XML comments
@@ -64,7 +59,7 @@ COMMENT_INSIDE 	: '<!--' .*? '-->'  -> skip ;
 
 mode PATHATTRIBUTE;
 
-ATTRIBUTECLOSE		: '"' -> popMode ;
+PATHATTRIBUTECLOSE		: '"' -> popMode ;
 BLANK				: ' '
 					| ',' ;
 PATH_M_REL			: 'm';
@@ -101,4 +96,6 @@ UNSIGNED_FLOAT	:   ('0'..'9')+ '.' ('0'..'9')* Exponent?
 				;
 fragment
 Exponent 		: ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
+
+
 

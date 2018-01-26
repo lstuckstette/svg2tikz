@@ -66,6 +66,7 @@ public class SVGParserBuilder {
 	public void generateLatex(File targetDirectory,String filename) {
 		LatexBuilder lb = new LatexBuilder();
 		String tikzCode = tikzOutput.toString(Charset.defaultCharset());
+		System.out.println("TikZ-Size: "+tikzCode.length());
 		lb.processTikZStringBuilder(tikzCode);
 		lb.writeToFile(targetDirectory, filename);
 	}

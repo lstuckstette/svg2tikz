@@ -13,7 +13,7 @@ public class GraphicsCommand {
             t = t.parent;
             clip = t.getClip();
         }
-        System.err.println("Clip: " + clip);
+        //System.err.println("Clip: " + clip);
     }
     public Object getCommand() {
         return command;

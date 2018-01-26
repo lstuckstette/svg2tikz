@@ -96,7 +96,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		System.out.println("visited " + pathCounter + " Paths!");
+		//System.out.println("visited " + pathCounter + " Paths!");
 		g2d.flush(); // force tikz-output!
 		// JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
@@ -1123,7 +1123,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
-		System.out.println("moveto_rel!");
+		
 		List<NumberContext> attributes = ctx.number();
 		// check input parameters:
 		if (attributes.size() < 2) {

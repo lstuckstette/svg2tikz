@@ -11,6 +11,8 @@ import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.apache.batik.ext.awt.geom.Polygon2D;
+import org.apache.batik.ext.awt.geom.Polyline2D;
 import org.apache.batik.parser.AWTPathProducer;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -96,7 +98,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitSvgRoot(SvgRootContext ctx) {
-		//System.out.println("visited " + pathCounter + " Paths!");
+		// System.out.println("visited " + pathCounter + " Paths!");
 		g2d.flush(); // force tikz-output!
 		// JOptionPane.showMessageDialog(null, new ImageIcon(output));
 	}
@@ -688,8 +690,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 		String points = "0,0";
 
-		int xPoly[] = { 0 };
-		int yPoly[] = { 0 };
+		float xPoly[] = { 0 };
+		float yPoly[] = { 0 };
 
 		String fill = "";
 		String stroke = "";
@@ -706,8 +708,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 				String[] point = points.split(" ");
 
-				xPoly = new int[point.length];
-				yPoly = new int[point.length];
+				xPoly = new float[point.length];
+				yPoly = new float[point.length];
 
 				for (int i = 0; i < point.length; i++) {
 
@@ -715,8 +717,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 					String[] coordinates = coordinate.split(",");
 
-					xPoly[i] = (int) Float.parseFloat(coordinates[0]);
-					yPoly[i] = (int) Float.parseFloat(coordinates[1]);
+					xPoly[i] = Float.parseFloat(coordinates[0]);
+					yPoly[i] = Float.parseFloat(coordinates[1]);
 
 				}
 
@@ -764,14 +766,14 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 		}
 
-		Polygon poly = new Polygon(xPoly, yPoly, xPoly.length);
-		// Polygon2D c2 = new Polygon2D(xPoly, yPoly, xPoly.length);
+		// Polygon poly = new Polygon(xPoly, yPoly, xPoly.length);
+		Polygon2D c2 = new Polygon2D(xPoly, yPoly, xPoly.length);
 
 		if (!fill.equals("") && !fill.equals("none")) {
 			c = stringToColor(fill);
 			g2d.setColor(c);
-			g2d.fillPolygon(poly);
-			// g2d.fill(c2);
+			// g2d.fillPolygon(poly);
+			g2d.fill(c2);
 		}
 
 		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
@@ -781,7 +783,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 		if (!stroke.equals("") && !stroke.equals("none")) {
 			c = stringToColor(stroke);
 			g2d.setColor(c);
-			g2d.drawPolygon(poly);
+			// g2d.drawPolygon(poly);
+			g2d.draw(c2);
 		}
 
 		if (!style.equals("") && !style.equals("none")) {
@@ -810,7 +813,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
 				c = stringToColor(fillStyle);
 				g2d.setColor(c);
-				g2d.fillPolygon(poly);
+				// g2d.fillPolygon(poly);
+				g2d.fill(c2);
 			}
 
 			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
@@ -820,7 +824,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
 				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawPolygon(poly);
+				// g2d.drawPolygon(poly);
+				g2d.draw(c2);
 			}
 		}
 
@@ -835,8 +840,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 		String points = "0,0";
 
-		int xPoly[] = { 0 };
-		int yPoly[] = { 0 };
+		float xPoly[] = { 0 };
+		float yPoly[] = { 0 };
 
 		String fill = "";
 		String stroke = "";
@@ -853,8 +858,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 				String[] point = points.split(" ");
 
-				xPoly = new int[point.length];
-				yPoly = new int[point.length];
+				xPoly = new float[point.length];
+				yPoly = new float[point.length];
 
 				for (int i = 0; i < point.length; i++) {
 
@@ -862,8 +867,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 					String[] coordinates = coordinate.split(",");
 
-					xPoly[i] = (int) Float.parseFloat(coordinates[0]);
-					yPoly[i] = (int) Float.parseFloat(coordinates[1]);
+					xPoly[i] = Float.parseFloat(coordinates[0]);
+					yPoly[i] = Float.parseFloat(coordinates[1]);
 
 				}
 
@@ -913,10 +918,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 		if (!fill.equals("") && !fill.equals("none")) {
 			c = stringToColor(fill);
 			g2d.setColor(c);
-			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
-			// Polyline2D c2 = new Polyline2D.Float(Float.parseFloat(x1),
-			// Float.parseFloat(y1), Float.parseFloat(x2),Float.parseFloat(y2));
-			// g2d.draw(c2);
+			// g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+			Polyline2D c2 = new Polyline2D(xPoly, yPoly, xPoly.length);
+			g2d.draw(c2);
 		}
 
 		if (!strokeWidth.equals("") && !strokeWidth.equals("none")) {
@@ -926,7 +930,9 @@ public class SVGParseListener extends SVGParserBaseListener {
 		if (!stroke.equals("") && !stroke.equals("none")) {
 			c = stringToColor(stroke);
 			g2d.setColor(c);
-			g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+			// g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+			Polyline2D c2 = new Polyline2D(xPoly, yPoly, xPoly.length);
+			g2d.draw(c2);
 		}
 
 		if (!style.equals("") && !style.equals("none")) {
@@ -955,7 +961,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!fillStyle.equals("") && !fillStyle.equals("none")) {
 				c = stringToColor(fillStyle);
 				g2d.setColor(c);
-				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+				Polyline2D c2 = new Polyline2D(xPoly, yPoly, xPoly.length);
+				g2d.draw(c2);
 			}
 
 			if (!strokeWidthStyle.equals("") && !strokeWidthStyle.equals("none")) {
@@ -965,7 +972,8 @@ public class SVGParseListener extends SVGParserBaseListener {
 			if (!strokeStyle.equals("") && !strokeStyle.equals("none")) {
 				c = stringToColor(strokeStyle);
 				g2d.setColor(c);
-				g2d.drawPolyline(xPoly, yPoly, xPoly.length);
+				Polyline2D c2 = new Polyline2D(xPoly, yPoly, xPoly.length);
+				g2d.draw(c2);
 			}
 		}
 
@@ -1123,7 +1131,7 @@ public class SVGParseListener extends SVGParserBaseListener {
 
 	@Override
 	public void exitPath_element_moveto_rel(Path_element_moveto_relContext ctx) {
-		
+
 		List<NumberContext> attributes = ctx.number();
 		// check input parameters:
 		if (attributes.size() < 2) {
